@@ -16,6 +16,8 @@ export default defineConfig({
         name: "Gestão Armony",
         short_name: "Gestão Armony",
         description: "Sistema de Gestão de Obras",
+        theme_color: "#003D9B",
+        background_color: "#ffffff",
         display: "standalone",
         orientation: "portrait",
         start_url: "/",
