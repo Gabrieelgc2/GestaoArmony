@@ -24,19 +24,19 @@ export default defineConfig({
 
         icons: [
           {
-            src: "/pwa-192.jpeg",
+            src: "/pwa-192.png",
             sizes: "192x192",
-            type: "image/jpeg",
+            type: "image/png",
           },
           {
-            src: "/pwa-512.jpeg",
+            src: "/pwa-512.png",
             sizes: "512x512",
-            type: "image/jpeg",
+            type: "image/png",
           },
           {
-            src: "/maskable-512.jpeg",
+            src: "/maskable-512.png",
             sizes: "512x512",
-            type: "image/jpeg",
+            type: "image/png",
             purpose: "maskable",
           },
         ],
