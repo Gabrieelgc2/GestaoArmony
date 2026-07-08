@@ -13,7 +13,7 @@ export default function DetalhesDoProjeto() {
         <div className="relative min-h-screen bg-[#F8F9FB] px-10 pt-20 pb-28">
 
             {/* Header */}
-            <Header>
+            <Header backTo="/painel">
             Detalhes do projeto
             </Header>
 

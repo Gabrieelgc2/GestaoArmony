@@ -12,7 +12,7 @@ export default function EditarProjeto() {
         <div className="relative min-h-screen bg-[#F8F9FB] px-10 pt-23 pb-28">
             <main className="space-y-6">
 
-                <Header>
+                <Header backTo="/painel">
                     Editar projeto
                 </Header>
 

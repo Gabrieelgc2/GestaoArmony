@@ -4,15 +4,18 @@ interface ButtonConfirmProps {
   children: ReactNode;
   type?: "button" | "submit";
   icon?: ReactNode;
+  onClick?: () => void;
 }
 
 export default function ButtonConfirm({
   children,
   type = "button",
+  onClick,
 }: ButtonConfirmProps) {
   return (
     <button
       type={type}
+      onClick={onClick}
       className="
         cursor-pointer
         w-full

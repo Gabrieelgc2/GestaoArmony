@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "../pages/Planejador/Login/Login";
-// import Painel from "../pages/Painel/Painel";
+import PainelPlanejador from "../pages/Planejador/Painel";
+import PainelInstalador from "../pages/Instalador/Painel";
+import PainelInspetor from "../pages/Inspetor/Painel";
 import DetalheProjeto from "../pages/Planejador/DetalhesProjeto/index";
 import EditarProjeto from "../pages/Planejador/EditarProjeto";
 import InstrucaoObra from "../pages/Planejador/LiberarTrabalho/InstrucaoObra";
@@ -15,7 +17,9 @@ export function AppRoutes() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        {/* <Route path="/painel" element={<Painel />} /> */}
+        <Route path="/painel" element={<PainelPlanejador />} />
+        <Route path="/instalador/painel" element={<PainelInstalador />} />
+        <Route path="/inspetor/painel" element={<PainelInspetor />} />
         <Route path="/detalheprojeto" element={<DetalheProjeto />} />
         <Route path="/editarprojeto" element={<EditarProjeto />} />
         <Route path="/instrucaoobra" element={<InstrucaoObra />} />

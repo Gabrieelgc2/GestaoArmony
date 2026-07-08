@@ -2,8 +2,6 @@ import { HardHat } from "lucide-react";
 import Card from "./Card/Card";
 import CardHeader from "./Card/CardHeader";
 import InfoAlert from "./InfoAlert";
-import Input from "./Input/Input";
-import { CalendarDays } from "lucide-react";
 
 interface FaseProps {
   title: string;
@@ -11,9 +9,10 @@ interface FaseProps {
   instructionDescription: string;
   alertText: string;
   children?: React.ReactNode;
+  dateField: React.ReactNode;
 }
 
-export default function Fase({ title, instructionLabel, instructionDescription, alertText, children }: FaseProps) {
+export default function Fase({ title, instructionLabel, instructionDescription, alertText, children, dateField }: FaseProps) {
   return (
     <Card>
       <main className="space-y-3">
@@ -28,11 +27,7 @@ export default function Fase({ title, instructionLabel, instructionDescription, 
           <span className="text-[#FF5630]">*</span>
         </div>
 
-        <Input
-          type="date"
-          placeholder="mm/dd/yyyy"
-          leftIcon={<CalendarDays size={18} />}
-        />
+        {dateField}
 
         <div className="text-sm text-black/80 font-semibold">
           {instructionDescription}

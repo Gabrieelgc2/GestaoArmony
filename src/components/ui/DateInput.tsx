@@ -9,44 +9,31 @@ import {
 } from "@/components/ui/popover";
 
 import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 interface DateInputProps {
-  label?: string;
   placeholder?: string;
   value?: Date;
   onChange: (date: Date | undefined) => void;
+  error?: string;
 }
 
 export default function DateInput({
-  label,
   placeholder = "Selecione uma data",
   value,
   onChange,
+  error
 }: DateInputProps) {
   return (
     <div className="space-y-2">
-      {label && (
-        <label className="text-sm font-medium text-gray-700">
-          {label}
-        </label>
-      )}
 
       <Popover>
         <PopoverTrigger>
           <button
-            className="
-              flex
-              w-full
-              items-center
-              gap-3
-              rounded-lg
-              border
-              border-gray-300
-              bg-gray-100
-              px-3
-              py-3
-              text-left
-            "
+            className={cn(
+              "flex w-full items-center rounded-lg border px-3 py-3 text-left",
+              error ? "border-red-500" : "border-gray-300"
+            )}
           >
             <CalendarDays
               size={18}
@@ -62,15 +49,15 @@ export default function DateInput({
             >
               {value
                 ? format(value, "dd/MM/yyyy", {
-                    locale: ptBR,
-                  })
+                  locale: ptBR,
+                })
                 : placeholder}
             </span>
           </button>
         </PopoverTrigger>
 
         <PopoverContent
-          className="w-auto p-0"
+          className="w-full bg-gray-200"
           align="start"
         >
           <Calendar
@@ -81,6 +68,12 @@ export default function DateInput({
           />
         </PopoverContent>
       </Popover>
+
+      {error && (
+        <p className="text-sm text-red-500">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

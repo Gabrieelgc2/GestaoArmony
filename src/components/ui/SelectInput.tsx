@@ -12,6 +12,7 @@ interface SelectProps {
   value: string;
   onChange: (value: string) => void;
   icon?: LucideIcon;
+  error?: string
 }
 
 export default function Select({
@@ -20,6 +21,7 @@ export default function Select({
   value,
   onChange,
   icon: Icon,
+  error
 }: SelectProps) {
   return (
     <div className="relative">
@@ -37,8 +39,13 @@ export default function Select({
           h-16 w-full appearance-none rounded-3xl border border-[#DFE1E6]
           bg-white pr-14 text-base text-[#191C1E]
           focus:border-[#0052CC] focus:outline-none
-          ${Icon ? "pl-16" : "pl-6"}
-        `}
+             ${error
+            ? "border-red-500 focus:border-red-500"
+            : "border-[#DFE1E6] focus:border-[#0052CC]"
+          }
+            ${Icon ? "pl-16" : "pl-6"}
+          `}
+
       >
         <option value="" disabled>
           {placeholder}
@@ -55,6 +62,12 @@ export default function Select({
         size={28}
         className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-[#737685]"
       />
+
+      {error && (
+        <p className="mt-2 text-sm text-red-500">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

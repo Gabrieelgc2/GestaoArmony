@@ -1,9 +1,14 @@
-interface ButtonCancelProps{
+interface ButtonCancelProps {
   children: React.ReactNode;
+  onClick?: () => void;
 }
-export default function ButtonCancel({ children } : ButtonCancelProps) {
+
+export default function ButtonCancel({ children, onClick }: ButtonCancelProps) {
     return (
-        <button className="
+        <button
+          type="button"
+          onClick={onClick}
+          className="
          cursor-pointer
          w-full
         rounded-xl
