@@ -4,7 +4,7 @@ import { usePwaInstall } from "@/hooks/usePwaInstall";
 
 export default function PwaInstallPrompt() {
   const { showPrompt, isIos, canInstall, installApp, dismissPrompt } =
-    usePwaInstall();
+  usePwaInstall();
 
   if (!showPrompt) return null;
 

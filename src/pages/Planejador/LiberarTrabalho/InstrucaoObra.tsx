@@ -15,7 +15,7 @@ import SchedulingModals from "@/components/ui/Modal/SchedulingModals";
 export default function InstrucaoObra() {
   const [instructionDate, setInstructionDate] = useState<Date>();
   const [instructionMedicaoDate, setInstructionMedicaoDate] = useState<Date>();
-  const { responsavel, setResponsavel, errors, validate } = useSchedulingForm();
+  const {responsavel, setResponsavel, errors, validate } = useSchedulingForm();
   const schedulingModals = useSchedulingModals();
   const { openConfirmModal, openCancelModal } = schedulingModals;
 
