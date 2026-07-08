@@ -18,8 +18,6 @@ export function AppRoutes() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/painel" element={<PainelPlanejador />} />
-        <Route path="/instalador/painel" element={<PainelInstalador />} />
-        <Route path="/inspetor/painel" element={<PainelInspetor />} />
         <Route path="/detalheprojeto" element={<DetalheProjeto />} />
         <Route path="/editarprojeto" element={<EditarProjeto />} />
         <Route path="/instrucaoobra" element={<InstrucaoObra />} />
@@ -28,6 +26,8 @@ export function AppRoutes() {
         <Route path="/entregaObra" element={<EntregaObra />} />
         <Route path="/posinstalacao" element={<PosInstalacao />} />
         <Route path="/preinstalacao" element={<PreInstalacao />} />
+        <Route path="/instalador/painel" element={<PainelInstalador />} />
+        <Route path="/inspetor/painel" element={<PainelInspetor />} />
       </Routes>
     </BrowserRouter>
   );
