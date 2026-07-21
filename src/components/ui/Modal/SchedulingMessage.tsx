@@ -1,33 +1,39 @@
-import { XCircle } from "lucide-react";
 import Modal from "./Modal";
+import type { ReactNode } from "react";
 
-interface SchedulingCancelMessageProps {
+interface MessageProps {
   open: boolean;
   onClose: () => void;
+
+  title: string;
+  description: string;
+  buttonText: string;
+
+  icon: ReactNode;
 }
 
-export default function SchedulingCancelMessage({
+export default function SchedulingMessage({
   open,
   onClose,
-}: SchedulingCancelMessageProps) {
+  title,
+  description,
+  icon,
+  buttonText
+}: MessageProps) {
   return (
     <Modal open={open} onClose={onClose}>
       <div className="space-y-6 pt-2 text-center">
         <div className="flex justify-center">
-          <XCircle
-            size={48}
-            className="text-[#FF5630]"
-            strokeWidth={2}
-          />
+          {icon}
         </div>
 
         <div className="space-y-2">
           <h2 className="text-xl font-bold text-[#191C1E]">
-            Agendamento cancelado
+            {title}
           </h2>
 
           <p className="text-base text-[#434654]">
-            O agendamento foi cancelado. Nenhuma alteração foi salva.
+            {description}
           </p>
         </div>
 
@@ -36,7 +42,7 @@ export default function SchedulingCancelMessage({
           onClick={onClose}
           className="w-full rounded-xl bg-blue-800 py-3 font-semibold text-white transition hover:bg-blue-900"
         >
-          Entendi
+          {buttonText}
         </button>
       </div>
     </Modal>

@@ -11,6 +11,7 @@ import Medicao from "../pages/Planejador/LiberarTrabalho/Medicao";
 import EntregaObra from "../pages/Planejador/LiberarTrabalho/EntregaObra";
 import PosInstalacao from "../pages/Planejador/LiberarTrabalho/PosInstalacao";
 import PreInstalacao from "../pages/Planejador/LiberarTrabalho/PreInstalacao";
+import Fluxograma from "@/pages/Planejador/Fluxograma/Fluxograma";
 
 export function AppRoutes() {
   return (
@@ -28,6 +29,7 @@ export function AppRoutes() {
         <Route path="/preinstalacao" element={<PreInstalacao />} />
         <Route path="/instalador/painel" element={<PainelInstalador />} />
         <Route path="/inspetor/painel" element={<PainelInspetor />} />
+        <Route path="/fluxograma" element={<Fluxograma />} />
       </Routes>
     </BrowserRouter>
   );

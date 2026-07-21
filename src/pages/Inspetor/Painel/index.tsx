@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/ui/Header";
-import ProjectPanel from "@/components/project-panel/ProjectPanel";
-import { mockProjects } from "@/data/mockProjects";
+import { mockProjects } from "@/mocks/projects";
 import type { Project } from "@/types/project";
+import ProjectTable from "@/components/project-panel/ProjectTable";
 
 export default function PainelInspetor() {
   const navigate = useNavigate();
@@ -20,9 +20,9 @@ export default function PainelInspetor() {
           Acompanhe os projetos que necessitam de inspeção e medição.
         </p>
 
-        <ProjectPanel
+        <ProjectTable
+          title="Novos"
           projects={mockProjects}
-          onProjectClick={handleProjectClick}
         />
       </main>
     </div>

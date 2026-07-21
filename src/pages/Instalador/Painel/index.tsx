@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/ui/Header";
-import ProjectPanel from "@/components/project-panel/ProjectPanel";
-import { mockProjects } from "@/data/mockProjects";
+import ProjectPanel from "@/components/project-panel/ProjectTable";
+import { mockProjects } from "@/mocks/projects";
 import type { Project } from "@/types/project";
+import ProjectTable from "@/components/project-panel/ProjectTable";
 
 export default function PainelInstalador() {
   const navigate = useNavigate();
@@ -20,9 +21,9 @@ export default function PainelInstalador() {
           Visualize os projetos atribuídos para instalação.
         </p>
 
-        <ProjectPanel
+        <ProjectTable
+          title="Novos"
           projects={mockProjects}
-          onProjectClick={handleProjectClick}
         />
       </main>
     </div>

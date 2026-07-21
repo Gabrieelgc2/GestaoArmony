@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/ui/Header";
-import ProjectPanel from "@/components/project-panel/ProjectPanel";
-import { mockProjects } from "@/data/mockProjects";
+import { mockProjects } from "@/mocks/projects";
 import type { Project } from "@/types/project";
+import ProjectTable from "@/components/project-panel/ProjectTable";
 
 export default function PainelPlanejador() {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ export default function PainelPlanejador() {
     navigate("/editarprojeto");
   };
 
+
   return (
     <div className="relative min-h-screen bg-[#F8F9FB] px-10 pt-23 pb-28">
       <Header>Painel de Projetos</Header>
@@ -24,13 +25,11 @@ export default function PainelPlanejador() {
           Gerencie todos os projetos de clientes e acompanhe o andamento de cada obra.
         </p>
 
-        <ProjectPanel
-          projects={mockProjects}
-          showCategories
-          showEditAction
-          onProjectClick={handleProjectClick}
-          onEditClick={handleEditClick}
+        <ProjectTable
+        title="Novos"
+        projects={mockProjects}
         />
+
       </main>
     </div>
   );

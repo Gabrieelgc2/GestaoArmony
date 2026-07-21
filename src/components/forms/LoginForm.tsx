@@ -2,8 +2,10 @@ import Button from "../ui/Button/ButtonConfirm";
 import Checkbox from "../Checkbox/Checkbox";
 import Input from "../ui/Input/Input";
 import { Mail, Lock, Eye} from "lucide-react";
+import { useBackNavigation } from "@/hooks/useBackNavigation";
 
 export default function LoginForm() {
+  const handleBack = useBackNavigation("/painel");
   return (
     <form className="space-y-6">
 
@@ -36,7 +38,7 @@ export default function LoginForm() {
 
       </div>
 
-      <Button type="submit">
+      <Button type="button" onClick={handleBack}>
 
         Entrar →
 

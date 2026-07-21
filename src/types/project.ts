@@ -4,10 +4,8 @@ export interface Project {
   id: string;
   name: string;
   orderNumber: string;
-  deadlineDays: number;
   installationLocation: string;
-  status: string;
-  category: ProjectCategory;
+  productiondeadline?: number;
 }
 
 export interface ProjectCategoryTab {
@@ -20,3 +18,4 @@ export const PROJECT_CATEGORY_TABS: ProjectCategoryTab[] = [
   { id: "liberado", label: "Liberados para trabalhar" },
   { id: "em_andamento", label: "Em andamento" },
 ];
+

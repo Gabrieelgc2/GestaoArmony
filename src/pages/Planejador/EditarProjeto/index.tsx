@@ -6,6 +6,7 @@ import Card from "../../../components/ui/Card/Card";
 import CardHeader from "../../../components/ui/Card/CardHeader";
 import { CalendarDays } from 'lucide-react';
 import ButtonConfirm from "../../../components/ui/Button/ButtonConfirm";
+import ButtonCancel from "@/components/ui/Button/ButtonCancel";
 
 export default function EditarProjeto() {
     return (
@@ -64,19 +65,10 @@ export default function EditarProjeto() {
                 <ButtonConfirm>
                     Liberar para trabalho
                 </ButtonConfirm>
-                <button className="
-                    cursor-pointer
-                        w-full
-        rounded-xl
-        bg-[#C3C6D6]
-        py-4
-        text-[#434654]
-        font-semibold
-        transition
-        hover:bg-[#BFC3D1]
-      ">
-                    Cancelar e voltar
-                </button>
+                
+                <ButtonCancel>
+                    Voltar
+                </ButtonCancel>
             </main>
         </div>
     )

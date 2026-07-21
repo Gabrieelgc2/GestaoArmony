@@ -15,7 +15,7 @@ import SchedulingModals from "@/components/ui/Modal/SchedulingModals";
 export default function InstrucaoObra() {
   const [instructionDate, setInstructionDate] = useState<Date>();
   const [instructionMedicaoDate, setInstructionMedicaoDate] = useState<Date>();
-  const {responsavel, setResponsavel, errors, validate } = useSchedulingForm();
+  const { responsavel, setResponsavel, errors, validate } = useSchedulingForm();
   const schedulingModals = useSchedulingModals();
   const { openConfirmModal, openCancelModal } = schedulingModals;
 
@@ -58,7 +58,7 @@ export default function InstrucaoObra() {
             Medição campo (opcional)
           </p>
 
-          <Checkbox label="Realizar medição nesta visita?" />
+          <Checkbox label="Medição feita?" />
 
           <DateInput
             value={instructionMedicaoDate}
@@ -71,13 +71,14 @@ export default function InstrucaoObra() {
           onChange={setResponsavel}
           error={errors.responsavel}
         />
+
         <ButtonConfirm onClick={handleConfirm}>
           Confirmar agendamento
         </ButtonConfirm>
         <ButtonCancel onClick={openCancelModal}>
           Cancelar e voltar
         </ButtonCancel>
-
+        
       </main>
       <SchedulingModals modals={schedulingModals} />
     </div>
