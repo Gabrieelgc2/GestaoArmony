@@ -7,22 +7,37 @@ import Fase from "../../../components/ui/Fase";
 import Header from "../../../components/ui/Header";
 import ProjectCard from "../../../components/ui/ProjectCard";
 import DateInput from "@/components/ui/DateInput";
-import { useSchedulingForm } from "@/hooks/useSchedulingForm";
-import { useSchedulingModals } from "@/hooks/useSchedulingModals";
-import SchedulingModals from "@/components/ui/Modal/SchedulingModals";
+import type { Project } from "@/types/project";
+import { validateRequiredDate, validateRequiredResponsavel } from "@/validations/etapaValidate";
 
-export default function PreInstalacao() {
+interface PreInstalacaoProps{
+    project: Project;
+}
+
+export default function PreInstalacao({project}: PreInstalacaoProps) {
     const [preInstalacao, setPreInstalacao] = useState<Date>();
-    const { responsavel, setResponsavel, errors, validate } = useSchedulingForm();
-    const schedulingModals = useSchedulingModals();
-    const { openConfirmModal, openCancelModal } = schedulingModals;
-
-    const handleConfirm = () => {
-        if (validate(preInstalacao)) {
-            openConfirmModal();
-        }
-    };
-
+    const [responsavel, setResponsavel] = useState("");
+    const [errors, setErrors] = useState({
+              preInstalacao: "",
+              responsavel: "",
+            });
+          
+            function handleConfirm (){
+                const newErrors = {
+                  preInstalacao: validateRequiredDate(preInstalacao),
+                  responsavel: validateRequiredResponsavel(responsavel),
+                };
+            
+            
+                setErrors(newErrors);
+            
+                if (errors.preInstalacao || errors.responsavel) {
+                  return;
+                }
+            
+                // atualizar projeto
+              }
+    
     return (
 
         <div className="relative min-h-screen bg-[#F8F9FB] px-10 pt-23 pb-28">
@@ -32,9 +47,9 @@ export default function PreInstalacao() {
                 </Header>
                 <Card>
                     <ProjectCard
-                        company="Alpha Construction Ltd."
-                        projectId="#ORD-2024-0892"
-                        status="Aguardando Agenda"
+                        company={project.name}
+                        projectId={project.id}
+                        status={project.status}
                     />
                 </Card>
                 <Fase
@@ -46,7 +61,7 @@ export default function PreInstalacao() {
                         <DateInput
                             value={preInstalacao}
                             onChange={setPreInstalacao}
-                            error={errors.date}
+                            error={errors.preInstalacao}
                         />
                     }
                 >
@@ -59,12 +74,11 @@ export default function PreInstalacao() {
                 <ButtonConfirm onClick={handleConfirm}>
                     Confirmar agendamento
                 </ButtonConfirm>
-                <ButtonCancel onClick={openCancelModal}>
+                <ButtonCancel>
                     Cancelar e voltar
                 </ButtonCancel>
 
             </main>
-            <SchedulingModals modals={schedulingModals} />
         </div>
     )
 }

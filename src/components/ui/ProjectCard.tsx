@@ -2,7 +2,7 @@ import { Building2 } from "lucide-react";
 
 interface ProjectCardProps {
   company: string;
-  projectId: string;
+  projectId: number;
   status: string;
 }
 

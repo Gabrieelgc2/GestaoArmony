@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 interface DateInputProps {
   placeholder?: string;
-  value?: Date;
+  value?: Date | undefined;
   onChange: (date: Date | undefined) => void;
   error?: string;
 }

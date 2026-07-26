@@ -7,21 +7,36 @@ import Fase from "../../../components/ui/Fase";
 import Header from "../../../components/ui/Header";
 import ProjectCard from "../../../components/ui/ProjectCard";
 import DateInput from "@/components/ui/DateInput";
-import { useSchedulingForm } from "@/hooks/useSchedulingForm";
-import { useSchedulingModals } from "@/hooks/useSchedulingModals";
-import SchedulingModals from "@/components/ui/Modal/SchedulingModals";
+import type { Project } from "@/types/project";
+import { validateRequiredDate, validateRequiredResponsavel } from "@/validations/etapaValidate";
 
-export default function PosInstalacao() {
+interface PosInstalacaoProps{
+    project: Project;
+}
+
+export default function PosInstalacao({project}: PosInstalacaoProps ){
     const [posInstalacao, setPosInstalacao] = useState<Date>();
-    const { responsavel, setResponsavel, errors, validate } = useSchedulingForm();
-    const schedulingModals = useSchedulingModals();
-    const { openConfirmModal, openCancelModal } = schedulingModals;
-
-    const handleConfirm = () => {
-        if (validate(posInstalacao)) {
-            openConfirmModal();
-        }
-    };
+    const [responsavel, setResponsavel] = useState("");
+    const [errors, setErrors] = useState({
+          posInstalacao: "",
+          responsavel: "",
+        });
+      
+        function handleConfirm (){
+            const newErrors = {
+              posInstalacao: validateRequiredDate(posInstalacao),
+              responsavel: validateRequiredResponsavel(responsavel),
+            };
+        
+        
+            setErrors(newErrors);
+        
+            if (errors.posInstalacao || errors.responsavel) {
+              return;
+            }
+        
+            // atualizar projeto
+          }
 
     return (
 
@@ -32,9 +47,9 @@ export default function PosInstalacao() {
                 </Header>
                 <Card>
                     <ProjectCard
-                        company="Alpha Construction Ltd."
-                        projectId="#ORD-2024-0892"
-                        status="Aguardando Agenda"
+                        company={project.name}
+                        projectId={project.id}
+                        status={project.status}
                     />
                 </Card>
                 <Fase
@@ -46,7 +61,7 @@ export default function PosInstalacao() {
                         <DateInput
                             value={posInstalacao}
                             onChange={setPosInstalacao}
-                            error={errors.date}
+                            error={errors.posInstalacao}
                         />
                     }
                 >
@@ -59,12 +74,11 @@ export default function PosInstalacao() {
                 <ButtonConfirm onClick={handleConfirm}>
                     Confirmar agendamento
                 </ButtonConfirm>
-                <ButtonCancel onClick={openCancelModal}>
+                <ButtonCancel>
                     Cancelar e voltar
                 </ButtonCancel>
 
             </main>
-            <SchedulingModals modals={schedulingModals} />
         </div>
     )
 }

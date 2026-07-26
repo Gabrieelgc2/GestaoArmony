@@ -7,21 +7,36 @@ import Fase from "../../../components/ui/Fase";
 import Header from "../../../components/ui/Header";
 import ProjectCard from "../../../components/ui/ProjectCard";
 import DateInput from "@/components/ui/DateInput";
-import { useSchedulingForm } from "@/hooks/useSchedulingForm";
-import { useSchedulingModals } from "@/hooks/useSchedulingModals";
-import SchedulingModals from "@/components/ui/Modal/SchedulingModals";
+import { validateRequiredDate, validateRequiredResponsavel } from "@/validations/etapaValidate";
+import type { Project } from "@/types/project";
 
-export default function Instalacao() {
+interface InstalacaoProps {
+  project: Project;
+}
+
+export default function Instalacao({project}: InstalacaoProps) {
   const [instalacaoDate, setInstalacaoDate] = useState<Date>();
-  const { responsavel, setResponsavel, errors, validate } = useSchedulingForm();
-  const schedulingModals = useSchedulingModals();
-  const { openConfirmModal, openCancelModal } = schedulingModals;
+  const [responsavel, setResponsavel] = useState("");
+  const [errors, setErrors] = useState({
+    instalacaoDate: "",
+    responsavel: "",
+  });
 
-  const handleConfirm = () => {
-    if (validate(instalacaoDate)) {
-      openConfirmModal();
+  function handleConfirm (){
+      const newErrors = {
+        instalacaoDate: validateRequiredDate(instalacaoDate),
+        responsavel: validateRequiredResponsavel(responsavel),
+      };
+  
+  
+      setErrors(newErrors);
+  
+      if (errors.instalacaoDate || errors.responsavel) {
+        return;
+      }
+  
+      // atualizar projeto
     }
-  };
 
   return (
 
@@ -32,9 +47,9 @@ export default function Instalacao() {
         </Header>
         <Card>
           <ProjectCard
-            company="Alpha Construction Ltd."
-            projectId="#ORD-2024-0892"
-            status="Aguardando Agenda"
+            company={project.name}
+            projectId={project.id}
+            status={project.status}
           />
         </Card>
         <Fase
@@ -46,7 +61,7 @@ export default function Instalacao() {
             <DateInput
               value={instalacaoDate}
               onChange={setInstalacaoDate}
-              error={errors.date}
+              error={errors.instalacaoDate}
             />
           }
         >
@@ -59,12 +74,11 @@ export default function Instalacao() {
         <ButtonConfirm onClick={handleConfirm}>
           Confirmar agendamento
         </ButtonConfirm>
-        <ButtonCancel onClick={openCancelModal}>
+        <ButtonCancel>
           Cancelar e voltar
         </ButtonCancel>
 
       </main>
-      <SchedulingModals modals={schedulingModals} />
     </div>
   )
 }

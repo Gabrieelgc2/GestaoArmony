@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Checkbox from "../../../components/Checkbox/Checkbox";
 import AtribuirResponsavel from "../../../components/ui/AtribuirResponsavel";
 import ButtonCancel from "../../../components/ui/Button/ButtonCancel";
 import ButtonConfirm from "../../../components/ui/Button/ButtonConfirm";
@@ -8,22 +7,37 @@ import Fase from "../../../components/ui/Fase";
 import Header from "../../../components/ui/Header";
 import ProjectCard from "../../../components/ui/ProjectCard";
 import DateInput from "@/components/ui/DateInput";
-import { useSchedulingForm } from "@/hooks/useSchedulingForm";
-import { useSchedulingModals } from "@/hooks/useSchedulingModals";
-import SchedulingModals from "@/components/ui/Modal/SchedulingModals";
+import type { Project } from "@/types/project";
+import { validateRequiredDate, validateRequiredResponsavel } from "@/validations/etapaValidate";
 
-export default function InstrucaoObra() {
+interface InstrucaoObraProps {
+  project: Project;
+}
+
+export default function InstrucaoObra({ project }: InstrucaoObraProps) {
   const [instructionDate, setInstructionDate] = useState<Date>();
-  const [instructionMedicaoDate, setInstructionMedicaoDate] = useState<Date>();
-  const { responsavel, setResponsavel, errors, validate } = useSchedulingForm();
-  const schedulingModals = useSchedulingModals();
-  const { openConfirmModal, openCancelModal } = schedulingModals;
+  const [responsavel, setResponsavel] = useState("");
+  const [errors, setErrors] = useState({
+    instructionDate: "",
+    responsavel: "",
+  });
 
-  const handleConfirm = () => {
-    if (validate(instructionDate)) {
-      openConfirmModal();
+  function handleConfirm() {
+
+    const newErrors = {
+      instructionDate: validateRequiredDate(instructionDate),
+      responsavel: validateRequiredResponsavel(responsavel),
+    };
+
+
+    setErrors(newErrors);
+
+    if (errors.instructionDate || errors.responsavel) {
+      return;
     }
-  };
+
+    // atualizar projeto
+  }
 
   return (
 
@@ -34,9 +48,9 @@ export default function InstrucaoObra() {
         </Header>
         <Card>
           <ProjectCard
-            company="Alpha Construction Ltd."
-            projectId="#ORD-2024-0892"
-            status="Aguardando Agenda"
+            company={project.name}
+            projectId={project.id}
+            status={project.status}
           />
         </Card>
         <Fase
@@ -48,24 +62,12 @@ export default function InstrucaoObra() {
             <DateInput
               value={instructionDate}
               onChange={setInstructionDate}
-              error={errors.date}
+              error={errors.instructionDate}
             />
           }
         >
-          <hr className="my-6 border-gray-600" />
-
-          <p className="text-sm text-black/80 font-semibold">
-            Medição campo (opcional)
-          </p>
-
-          <Checkbox label="Medição feita?" />
-
-          <DateInput
-            value={instructionMedicaoDate}
-            onChange={setInstructionMedicaoDate}
-          />
         </Fase>
-        
+
         <AtribuirResponsavel
           value={responsavel}
           onChange={setResponsavel}
@@ -75,12 +77,11 @@ export default function InstrucaoObra() {
         <ButtonConfirm onClick={handleConfirm}>
           Confirmar agendamento
         </ButtonConfirm>
-        <ButtonCancel onClick={openCancelModal}>
+        <ButtonCancel>
           Cancelar e voltar
         </ButtonCancel>
-        
+
       </main>
-      <SchedulingModals modals={schedulingModals} />
     </div>
   )
 }
