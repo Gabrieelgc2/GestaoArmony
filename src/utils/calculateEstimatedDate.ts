@@ -1,6 +1,6 @@
 export default function calculateEstimatedDate(
   measurementDate: Date | null,
-  productionDeadline: number | null
+  productionDeadline?: number | null
 ): Date | null {
   if (!measurementDate || !productionDeadline) {
     return null;

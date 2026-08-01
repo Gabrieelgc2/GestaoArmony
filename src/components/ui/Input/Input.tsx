@@ -6,6 +6,9 @@ interface InputProps {
   placeholder?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean
 }
 
 export default function Input({
@@ -14,6 +17,9 @@ export default function Input({
   placeholder,
   leftIcon,
   rightIcon,
+  value,
+  onChange,
+  required = false
 }: InputProps) {
   return (
     <div className="space-y-2">
@@ -30,7 +36,10 @@ export default function Input({
 
         <input
           type={type}
+          value={value}
           placeholder={placeholder}
+          onChange={onChange}
+          required={required}
           className="flex-1 bg-transparent py-3 outline-none"
         />
 

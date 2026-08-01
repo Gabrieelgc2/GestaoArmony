@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { projectService } from "@/pages/Planejador/services/projectService";
-
 // import NovoStep from "@/Planejador/Fases/NovoStep";
 // import LiberadoStep from "@/components/Fases/LiberadoStep";
 import InstrucaoObraStep from "@/pages/Planejador/Fases/InstrucaoObra";
@@ -9,6 +7,8 @@ import MedicaoStep from "@/pages/Planejador/Fases/Medicao";
 import PreInstalacaoStep from "@/pages/Planejador/Fases/PreInstalacao";
 import PosInstalacaoStep from "@/pages/Planejador/Fases/PosInstalacao";
 import EntregaObraStep from "@/pages/Planejador/Fases/EntregaObra";
+import Novo from "./Fases/Novo";
+import { projectService } from "./projectService";
 
 export default function Projeto() {
   const { id } = useParams();
@@ -19,12 +19,8 @@ export default function Projeto() {
     async function fetchProject() {
       if (!id) return;
 
-      const numericId = Number(id);
-      
-      if (!isNaN(numericId)) {
-        const data = await projectService.getProjectbyId(numericId);
+        const data = await projectService.getById(id)
         setProject(data);
-      }
 
       setLoading(false);
     }
@@ -32,12 +28,13 @@ export default function Projeto() {
     fetchProject();
   }, [id]);
 
+
   if (loading) return <p>Carregando...</p>;
   if (!project) return <p>Projeto não encontrado.</p>;
 
   switch (project.status) {
-    // case "novo":
-    //   return <NovoStep project={project} />;
+    case "NOVO":
+      return <Novo project={project} />;
 
     // case "liberado":
     //   return <LiberadoStep project={project} />;
@@ -45,16 +42,16 @@ export default function Projeto() {
     case "instrucao-obra":
       return <InstrucaoObraStep project={project} />;
 
-    case "medicao":
+    case "MEDICAO":
       return <MedicaoStep project={project} />;
 
-    case "pre-instalacao":
+    case "PRE_INSTALACAO":
       return <PreInstalacaoStep project={project} />;
 
-    case "pos-instalacao":
+    case "POS_INSTALACAO":
       return <PosInstalacaoStep project={project} />;
 
-    case "entrega":
+    case "ENTREGA_OBRA":
       return <EntregaObraStep project={project} />;
 
     default:

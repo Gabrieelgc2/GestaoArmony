@@ -1,34 +1,43 @@
-import type { ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-interface ButtonConfirmProps {
+interface ButtonConfirmProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  type?: "button" | "submit";
   icon?: ReactNode;
-  onClick?: () => void;
 }
 
 export default function ButtonConfirm({
   children,
-  type = "button",
-  onClick,
+  type = "submit",
+  icon,
+  disabled,
+  className = "",
+  ...props 
 }: ButtonConfirmProps) {
   return (
     <button
       type={type}
-      onClick={onClick}
-      className="
-        cursor-pointer
+      disabled={disabled}
+      {...props}
+      className={`
+        flex
         w-full
+        items-center
+        justify-center
+        gap-2
         rounded-xl
         bg-blue-800
         py-4
-        text-white
         font-semibold
+        text-white
         transition
         hover:bg-blue-900
-      "
+        disabled:cursor-not-allowed
+        disabled:opacity-50
+        ${className}
+      `}
     >
       {children}
+      {icon && <span>{icon}</span>}
     </button>
   );
 }

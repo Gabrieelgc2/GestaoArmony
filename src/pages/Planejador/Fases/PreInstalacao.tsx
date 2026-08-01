@@ -47,7 +47,7 @@ export default function PreInstalacao({project}: PreInstalacaoProps) {
                 </Header>
                 <Card>
                     <ProjectCard
-                        company={project.name}
+                        company={project.name_project}
                         projectId={project.id}
                         status={project.status}
                     />

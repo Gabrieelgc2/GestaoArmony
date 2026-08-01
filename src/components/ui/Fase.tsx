@@ -5,11 +5,11 @@ import InfoAlert from "./InfoAlert";
 
 interface FaseProps {
   title: string;
-  instructionLabel: string;
-  instructionDescription: string;
-  alertText: string;
+  instructionLabel?: string;
+  instructionDescription?: string;
+  alertText?: string;
   children?: React.ReactNode;
-  dateField: React.ReactNode;
+  dateField?: React.ReactNode;
 }
 
 export default function Fase({ title, instructionLabel, instructionDescription, alertText, children, dateField }: FaseProps) {

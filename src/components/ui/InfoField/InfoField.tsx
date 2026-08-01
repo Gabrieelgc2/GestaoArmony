@@ -1,8 +1,9 @@
+import type { Project } from "@/types/project";
 import type { ReactNode } from "react";
 
 interface InfoFieldProps{
-    label:string;
-    value?: ReactNode;
+    label: string;
+    value?: string | null;
     icon?: ReactNode;
 }
 
