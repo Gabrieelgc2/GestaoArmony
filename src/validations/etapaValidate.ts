@@ -7,3 +7,15 @@ export function validateRequiredResponsavel(responsavel: string) {
     ? ""
     : "Selecione um responsável.";
 }
+
+export function validateRequiredLocation(location: string) {
+  return location.trim()
+    ? ""
+    : "Informe o local de instalação.";
+}
+
+export function validateRequiredDeadline(deadline: number) {
+  return deadline > 0
+    ? ""
+    : "Informe o prazo previsto.";
+}

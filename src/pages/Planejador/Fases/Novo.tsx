@@ -10,6 +10,7 @@ import { useState } from "react";
 import ButtonConfirm from "@/components/ui/Button/ButtonConfirm";
 import { projectService } from "../projectService";
 import { useNavigate } from "react-router-dom";
+import { validateRequiredDeadline, validateRequiredLocation } from "@/validations/etapaValidate";
 
 interface NovoProps {
     project: Project;
@@ -19,12 +20,22 @@ export default function Novo({ project }: NovoProps) {
     const [location, setLocation] = useState<string>("");
     const [deadline, setDeadline] = useState<number>(project.production_deadline || 0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState({
+        location: "",
+        deadline: "",
+    });
     const navigate = useNavigate();
 
     const handleConfirm = async () => {
+        
+        const newErrors = {
+            location: validateRequiredLocation(location),
+            deadline: validateRequiredDeadline(deadline),
+        };
 
-        if(!location.trim() || !deadline) {
-            alert("Por favor, informe o local de instalação e o prazo previsto.");
+        setErrors(newErrors);
+
+        if (newErrors.location || newErrors.deadline) {
             return;
         }
         try {
