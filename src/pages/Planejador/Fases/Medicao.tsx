@@ -47,7 +47,7 @@ export default function Medicao({project}: MedicaoProps){
         </Header>
         <Card>
           <ProjectCard
-            company={project.name}
+            company={project.name_project}
             projectId={project.id}
             status={project.status}
           />
