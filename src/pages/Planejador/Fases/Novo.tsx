@@ -10,7 +10,6 @@ import { useState } from "react";
 import ButtonConfirm from "@/components/ui/Button/ButtonConfirm";
 import { projectService } from "../projectService";
 import { useNavigate } from "react-router-dom";
-import StatusButton from "@/components/StatusButton";
 
 interface NovoProps {
     project: Project;

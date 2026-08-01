@@ -1,4 +1,3 @@
-import type { Project } from "@/types/project";
 import type { ReactNode } from "react";
 
 interface InfoFieldProps{
