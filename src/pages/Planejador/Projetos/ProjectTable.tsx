@@ -1,85 +1,43 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building, Handshake, MapPin, Hash, Loader2 } from "lucide-react";
+import { Building, Handshake, MapPin, Hash, LogOut } from "lucide-react";
 import ButtonConfirm from "@/components/ui/Button/ButtonConfirm";
-import {type Project, type ProjectStatus } from "@/types/project";
+import { type ProjectStatus } from "@/types/project";
 import StatusFilter from "@/components/StatusFilter";
-
+import { useAuth } from "@/hooks/useAuth";
+import { useProjects } from "@/hooks/useProject";
+import { EmptyState, ErrorState, LoadingState } from "@/components/FeedBackStates";
 
 export default function ProjectTable() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { projects, loading, error, refetch } = useProjects();
+  const { signOut, isLoggingOut } = useAuth();
   const [activeStatus, setActiveStatus] = useState<ProjectStatus>("NOVO");
   const filteredProjects = projects.filter((p) => p.status === activeStatus);
   const navigate = useNavigate();
-
-  // Chamada da API
-  useEffect(() => {
-    async function fetchProjects() {
-      try {
-        setLoading(true);
-        const response = await fetch("https://gestao-armony-backend.onrender.com/projects");
-
-        if (!response.ok) {
-          throw new Error("Erro ao buscar projetos");
-        }
-
-        const data = await response.json();
-        setProjects(data);
-      } catch (err: any) {
-        setError(err.message || "Ocorreu um erro ao carregar os dados.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProjects();
-  }, []);
-
-  // 3. Renderização de Estado de Carregamento (Loading)
-  if (loading) {
-    return (
-      <div className="flex h-64 w-full items-center justify-center gap-2 text-gray-500">
-        <Loader2 className="h-6 w-6 animate-spin text-[#003D9B]" />
-        <span>Carregando projetos...</span>
-      </div>
-    );
-  }
-
-  // 4. Renderização de Erro
-  if (error) {
-    return (
-      <div className="rounded-xl bg-red-50 p-6 text-center text-red-600">
-        <p>{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-        >
-          Tentar novamente
-        </button>
-      </div>
-    );
-  }
-
-  // 5. Renderização caso a API retorne um array vazio
-  if (projects.length === 0) {
-    return (
-      <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center text-gray-500">
-        Nenhum projeto encontrado.
-      </div>
-    );
-  }
+  if(loading) return <LoadingState message="Carregando projetos..." />;
+  if(error) return <ErrorState message={error} onRetry={refetch} />;
+  if(projects.length === 0) return <EmptyState message="Nenhum projeto encontrado." />;
 
   return (
     <>
-    <div className="p-5 space-y-4">
-      <p className="text-lg font-semibold text-[#191C1E]">Painel de projetos</p>
-      <StatusFilter
-        activeStatus={activeStatus}
-        onChangeStatus={(newStatus) => setActiveStatus(newStatus)}
-      />
-    </div>
+      <div className="p-5 space-y-4">
+        <div className="flex justify-between">
+          <p className="text-lg font-semibold text-[#191C1E]">Painel de projetos</p>
+          <button
+            onClick={signOut}
+            disabled={isLoggingOut}
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-[#003D9B] disabled:opacity-50"
+          >
+            <LogOut size={18} />
+            <span>{isLoggingOut ? "Saindo..." : "Sair"}</span>
+
+          </button>
+        </div>
+        <StatusFilter
+          activeStatus={activeStatus}
+          onChangeStatus={(newStatus) => setActiveStatus(newStatus)}
+        />
+      </div>
 
       {/* Tabela Desktop */}
       <div className="hidden overflow-x-auto md:block p-5">

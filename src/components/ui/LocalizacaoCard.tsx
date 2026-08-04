@@ -2,16 +2,14 @@ import Card from "../../components/ui/Card/Card";
 import CardHeader from "../../components/ui/Card/CardHeader";
 import InfoField from "../../components/ui/InfoField/InfoField";
 import { MapPin } from "lucide-react";
+import { type FieldErrors, type UseFormRegister} from "react-hook-form";
 
-interface LocalizacaoProps {
-  localizacao?: string | null;
-  onLocationChange?: (value: string) => void;
+interface LocalizacaoCardProps{
+  register: UseFormRegister<any>;
+  errors: FieldErrors<any>;
 }
 
-export default function LocalizacaoCard({
-  localizacao,
-  onLocationChange,
-}: LocalizacaoProps) {
+export default function LocalizacaoCard({register, errors}: LocalizacaoCardProps) {
   return (
     <Card>
       <div className="space-y-3">
@@ -36,11 +34,13 @@ export default function LocalizacaoCard({
               <input
                 type="text"
                 placeholder="Informe o local de instalação"
-                value={localizacao || ""}
-                onChange={(e) => onLocationChange?.(e.target.value)}
+                {...register("installation_location")}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#003D9B] focus:ring-1 focus:ring-[#003D9B]"
               />
             </div>
+            {errors.installation_location && (
+              <p className="text-xs text-red-500 mt-1">{errors.installation_location.message as string}</p>
+            )}
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@ export default function Medicao({project}: MedicaoProps){
         <Fase
           title="Fase: Medição"
           instructionLabel="Data da medicação"
-          instructionDescription="Escolha a data prevista para a medicação."
+          instructionDescription="Escolha a data prevista para a medição."
           alertText="Após esta etapa, a medição será realizada."
           dateField={
             <DateInput

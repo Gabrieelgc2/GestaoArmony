@@ -5,6 +5,7 @@ export interface Project {
   production_deadline?: number | null;
   installation_location?: string | null;
   medicao_date?: Date | null;
+  instrucao_date?: string | null;
   status: ProjectStatus;
 }
 
