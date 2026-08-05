@@ -9,7 +9,6 @@ import PosInstalacaoStep from "@/pages/Planejador/Fases/PosInstalacao";
 import EntregaObraStep from "@/pages/Planejador/Fases/EntregaObra";
 import Novo from "./Fases/Novo";
 import { projectService } from "./projectService";
-import LiberarTrabalho from "./Fases/LiberarTrabalho";
 
 export default function Projeto() {
   const { id } = useParams();
@@ -36,9 +35,6 @@ export default function Projeto() {
   switch (project.status) {
     case "NOVO":
       return <Novo project={project} />;
-
-    case "LIBERADO_TRABALHO":
-      return <LiberarTrabalho project={project} />;
 
     case "INSTRUCAO_OBRA":
       return <InstrucaoObraStep project={project} />;

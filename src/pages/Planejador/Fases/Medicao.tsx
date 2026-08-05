@@ -16,12 +16,12 @@ interface MedicaoProps {
   project: Project;
 }
 
-const preInstalacaoSchema = z.object({
-  pre_instalacao_date: z.string().min(1, "Informe a data de agendamento da pré-instalação."),
-  pre_instalacao_responsavel: z.string().min(1, "Informe o responsável pela pré-instalação."),
+const medicaoSchema = z.object({
+  medicao_date: z.string().min(1, "Informe a data de agendamento da pré-instalação."),
+  medicao_responsavel: z.string().min(1, "Informe o responsável pela pré-instalação."),
 });
 
-type FormData = z.infer<typeof preInstalacaoSchema>;
+type FormData = z.infer<typeof medicaoSchema>;
 
 export default function Medicao({ project }: MedicaoProps) {
 const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,19 +32,20 @@ const navigate = useNavigate();
     control,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(preInstalacaoSchema),
+    resolver: zodResolver(medicaoSchema),
     defaultValues: {
-      pre_instalacao_date: project.pre_instalacao_date ? project.pre_instalacao_date.split("T")[0] : "",
-      pre_instalacao_responsavel: project.pre_instalacao_responsavel || ""
+      medicao_date: project.medicao_date ? project.medicao_date.split("T")[0] : "",
+      medicao_responsavel: project.medicao_responsavel || ""
     },
   });
+
     const onSubmit = async (data: FormData) => {
       try {
         setIsSubmitting(true);
         const payload = {
-          pre_instalacao_date: data.pre_instalacao_date,
-          pre_instalacao_responsavel: data.pre_instalacao_responsavel,
-          status: "PRE_INSTALACAO"
+          medicao_date: data.medicao_date,
+          medicao_responsavel: data.medicao_responsavel,
+          status: "MEDICAO"
         };
         await projectService.updateProject(project.id, payload);
         alert("Dados atualizados com sucesso!");
@@ -80,22 +81,21 @@ const navigate = useNavigate();
             <div className="w-full space-y-1">
               <input
                 type="date"
-                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.pre_instalacao_date ? "border-red-500" : "border-gray-300"
+                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.medicao_date ? "border-red-500" : "border-gray-300"
                   }`}
-                {...register("pre_instalacao_date")}
+                {...register("medicao_date")}
               />
-              {errors.pre_instalacao_date && (
+              {errors.medicao_date && (
                 <p className="text-xs text-red-500">
-                  {errors.pre_instalacao_date.message}
+                  {errors.medicao_date.message}
                 </p>
               )}
             </div>
           }
         />
-
         <Controller
           control={control}
-          name="pre_instalacao_responsavel"
+          name="medicao_responsavel"
           render={({ field, fieldState }) => (
             <AtribuirResponsavel
               value={field.value}
@@ -104,6 +104,7 @@ const navigate = useNavigate();
             />
           )}
         />
+
         <ButtonConfirm type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Atualizando..." : "Confirmar agendamento"}
         </ButtonConfirm>

@@ -16,12 +16,12 @@ interface PreInstalacaoProps {
     project: Project;
 }
 
-const posInstalacoSchema = z.object({
-    pos_instalacao_date: z.string().min(1, "Informe a data de agendamento da pós-instalação."),
-    pos_instalacao_responsavel: z.string().min(1, "Informe o responsável pela pós-instalação."),
+const preInstalacaoSchema = z.object({
+    pre_instalacao_date: z.string().min(1, "Informe a data de agendamento da pós-instalação."),
+    pre_instalacao_responsavel: z.string().min(1, "Informe o responsável pela pós-instalação."),
 });
 
-type FormData = z.infer<typeof posInstalacoSchema>;
+type FormData = z.infer<typeof preInstalacaoSchema>;
 
 export default function PreInstalacao({ project }: PreInstalacaoProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,19 +32,19 @@ export default function PreInstalacao({ project }: PreInstalacaoProps) {
         control,
         formState: { errors },
     } = useForm<FormData>({
-        resolver: zodResolver(posInstalacoSchema),
+        resolver: zodResolver(preInstalacaoSchema),
         defaultValues: {
-            pos_instalacao_date: project.pos_instalacao_date ? project.pos_instalacao_date.split("T")[0] : "",
-            pos_instalacao_responsavel: project.pos_instalacao_responsavel || ""
+            pre_instalacao_date: project.pre_instalacao_date ? project.pre_instalacao_date.split("T")[0] : "",
+            pre_instalacao_responsavel: project.pre_instalacao_responsavel || ""
         },
     });
     const onSubmit = async (data: FormData) => {
         try {
             setIsSubmitting(true);
             const payload = {
-                pos_instalacao_date: data.pos_instalacao_date,
-                pos_instalacao_responsavel: data.pos_instalacao_responsavel,
-                status: "POS_INSTALACAO"
+                pre_instalacao_date: data.pre_instalacao_date,
+                pre_instalacao_responsavel: data.pre_instalacao_responsavel,
+                status: "PRE_INSTALACAO"
             };
             await projectService.updateProject(project.id, payload);
             alert("Dados atualizados com sucesso!");
@@ -82,13 +82,13 @@ export default function PreInstalacao({ project }: PreInstalacaoProps) {
                     <div className="w-full space-y-1">
                         <input
                             type="date"
-                            className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.pos_instalacao_date ? "border-red-500" : "border-gray-300"
+                            className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.pre_instalacao_date ? "border-red-500" : "border-gray-300"
                                 }`}
-                            {...register("pos_instalacao_date")}
+                            {...register("pre_instalacao_date")}
                         />
-                        {errors.pos_instalacao_date && (
+                        {errors.pre_instalacao_date && (
                             <p className="text-xs text-red-500">
-                                {errors.pos_instalacao_date.message}
+                                {errors.pre_instalacao_date.message}
                             </p>
                         )}
                     </div>
@@ -96,7 +96,7 @@ export default function PreInstalacao({ project }: PreInstalacaoProps) {
             />
             <Controller
                 control={control}
-                name="pos_instalacao_responsavel"
+                name="pre_instalacao_responsavel"
                 render={({ field, fieldState }) => (
                     <AtribuirResponsavel
                         value={field.value}

@@ -16,12 +16,12 @@ interface PosInstalacaoProps {
     project: Project;
 }
 
-const EntregadeObraSchema = z.object({
-    entrega_obra_date: z.string().min(1, "Informe a data de agendamento da entrega de obra."),
-    entrega_obra_responsavel: z.string().min(1, "Informe o responsável pela entrega de obra."),
+const posInstalacaoSchema = z.object({
+    pos_instalacao_date: z.string().min(1, "Informe a data de agendamento da entrega de obra."),
+    pos_instalacao_responsavel: z.string().min(1, "Informe o responsável pela entrega de obra."),
 })
 
-type FormData = z.infer<typeof EntregadeObraSchema>;
+type FormData = z.infer<typeof posInstalacaoSchema>;
 
 export default function PosInstalacao({ project }: PosInstalacaoProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,19 +32,19 @@ export default function PosInstalacao({ project }: PosInstalacaoProps) {
         control,
         formState: { errors },
     } = useForm<FormData>({
-        resolver: zodResolver(EntregadeObraSchema),
+        resolver: zodResolver(posInstalacaoSchema),
         defaultValues: {
-            entrega_obra_date: project.entrega_obra_date ? project.entrega_obra_date.split("T")[0] : "",
-            entrega_obra_responsavel: project.entrega_obra_responsavel || ""
+            pos_instalacao_date: project.pos_instalacao_date ? project.pos_instalacao_date.split("T")[0] : "",
+            pos_instalacao_responsavel: project.pos_instalacao_responsavel || ""
         },
     });
     const onSubmit = async (data: FormData) => {
         try {
             setIsSubmitting(true);
             const payload = {
-                entrega_obra_date: data.entrega_obra_date,
-                entrega_obra_responsavel: data.entrega_obra_responsavel,
-                status: "ENTREGA_OBRA"
+                pos_instalacao_date: data.pos_instalacao_date,
+                pos_instalacao_responsavel: data.pos_instalacao_responsavel,
+                status: "POS_INSTALACAO"
             };
             await projectService.updateProject(project.id, payload);
             alert("Dados atualizados com sucesso!");
@@ -80,13 +80,13 @@ export default function PosInstalacao({ project }: PosInstalacaoProps) {
                         <div className="w-full space-y-1">
                             <input
                                 type="date"
-                                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.entrega_obra_date ? "border-red-500" : "border-gray-300"
+                                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.pos_instalacao_date ? "border-red-500" : "border-gray-300"
                                     }`}
-                                {...register("entrega_obra_date")}
+                                {...register("pos_instalacao_date")}
                             />
-                            {errors.entrega_obra_date && (
+                            {errors.pos_instalacao_date && (
                                 <p className="text-xs text-red-500">
-                                    {errors.entrega_obra_date.message}
+                                    {errors.pos_instalacao_date.message}
                                 </p>
                             )}
                         </div>
@@ -94,7 +94,7 @@ export default function PosInstalacao({ project }: PosInstalacaoProps) {
                 />
                 <Controller
                     control={control}
-                    name="entrega_obra_responsavel"
+                    name="pos_instalacao_responsavel"
                     render={({ field, fieldState }) => (
                         <AtribuirResponsavel
                             value={field.value}

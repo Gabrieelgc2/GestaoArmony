@@ -16,12 +16,12 @@ interface EntregaObraProps {
     project: Project;
 }
 
-const EtapFinal = z.object({
-    etapa_final_date: z.string().min(1, "Informe a data de agendamento da etapa final."),
-    etapa_final_responsavel: z.string().min(1, "Informe o responsável pela etapa final."),
+const EntregaObraSchema = z.object({
+    entrega_obra_date: z.string().min(1, "Informe a data de agendamento da etapa final."),
+    entrega_obra_responsavel: z.string().min(1, "Informe o responsável pela etapa final."),
 })
 
-type FormData = z.infer<typeof EtapFinal>;
+type FormData = z.infer<typeof EntregaObraSchema>;
 
 export default function EntregaObra({ project }: EntregaObraProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,19 +32,19 @@ export default function EntregaObra({ project }: EntregaObraProps) {
         control,
         formState: { errors },
     } = useForm<FormData>({
-        resolver: zodResolver(EtapFinal),
+        resolver: zodResolver(EntregaObraSchema),
         defaultValues: {
-            etapa_final_date: project.etapa_final_date ? project.etapa_final_date.split("T")[0] : "",
-            etapa_final_responsavel: project.etapa_final_responsavel || ""
+            entrega_obra_date: project.entrega_obra_date ? project.entrega_obra_date.split("T")[0] : "",
+            entrega_obra_responsavel: project.entrega_obra_responsavel || ""
         },
     });
     const onSubmit = async (data: FormData) => {
         try {
             setIsSubmitting(true);
             const payload = {
-                etapa_final_date: data.etapa_final_date,
-                etapa_final_responsavel: data.etapa_final_responsavel,
-                status: "ETAPA_FINAL"
+                entrega_obra_date: data.entrega_obra_date,
+                entrega_obra_responsavel: data.entrega_obra_responsavel,
+                status: "ENTREGA_OBRA"
             };
             await projectService.updateProject(project.id, payload);
             alert("Dados atualizados com sucesso!");
@@ -80,13 +80,13 @@ export default function EntregaObra({ project }: EntregaObraProps) {
                         <div className="w-full space-y-1">
                             <input
                                 type="date"
-                                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.etapa_final_date ? "border-red-500" : "border-gray-300"
+                                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.entrega_obra_date ? "border-red-500" : "border-gray-300"
                                     }`}
-                                {...register("etapa_final_date")}
+                                {...register("entrega_obra_date")}
                             />
-                            {errors.etapa_final_date && (
+                            {errors.entrega_obra_date && (
                                 <p className="text-xs text-red-500">
-                                    {errors.etapa_final_date.message}
+                                    {errors.entrega_obra_date.message}
                                 </p>
                             )}
                         </div>
@@ -94,7 +94,7 @@ export default function EntregaObra({ project }: EntregaObraProps) {
                 />
                 <Controller
                     control={control}
-                    name="etapa_final_responsavel"
+                    name="entrega_obra_responsavel"
                     render={({ field, fieldState }) => (
                         <AtribuirResponsavel
                             value={field.value}

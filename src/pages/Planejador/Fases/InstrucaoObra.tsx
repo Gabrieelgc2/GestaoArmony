@@ -17,8 +17,8 @@ interface InstrucaoObraProps {
 }
 
 const medicaoSchema = z.object({
-  medicao_date: z.string().min(1, "Informe a data de agendamento da medição."),
-  medicao_responsavel: z.string().min(1, "Informe o responsável pela medição."),
+  instrucao_date: z.string().min(1, "Informe a data de agendamento da medição."),
+  instrucao_responsavel: z.string().min(1, "Informe o responsável pela medição."),
 });
 
 type FormData = z.infer<typeof medicaoSchema>;
@@ -35,8 +35,8 @@ export default function InstrucaoObra({ project }: InstrucaoObraProps) {
   } = useForm<FormData>({
     resolver: zodResolver(medicaoSchema),
     defaultValues: {
-      medicao_date: project.medicao_date ? project.medicao_date.split("T")[0] : "",
-      medicao_responsavel: project.medicao_responsavel || ""
+      instrucao_date: project.instrucao_date ? project.instrucao_date.split("T")[0] : "",
+      instrucao_responsavel: project.instrucao_responsavel || ""
     },
   });
 
@@ -44,9 +44,9 @@ export default function InstrucaoObra({ project }: InstrucaoObraProps) {
     try {
       setIsSubmitting(true);
       const payload = {
-        medicao_date: data.medicao_date,
-        medicao_responsavel: data.medicao_responsavel,
-        status: "MEDICAO"
+        medicao_date: data.instrucao_date,
+        medicao_responsavel: data.instrucao_responsavel,
+        status: "INSTRUCAO_OBRA"
       };
       await projectService.updateProject(project.id, payload);
       alert("Dados atualizados com sucesso!");
@@ -82,13 +82,13 @@ export default function InstrucaoObra({ project }: InstrucaoObraProps) {
             <div className="w-full space-y-1">
               <input
                 type="date"
-                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.medicao_date ? "border-red-500" : "border-gray-300"
+                className={`w-full rounded-lg border bg-white p-3 text-sm outline-none ${errors.instrucao_date ? "border-red-500" : "border-gray-300"
                   }`}
-                {...register("medicao_date")}
+                {...register("instrucao_date")}
               />
-              {errors.medicao_date && (
+              {errors.instrucao_date && (
                 <p className="text-xs text-red-500">
-                  {errors.medicao_date.message}
+                  {errors.instrucao_date.message}
                 </p>
               )}
             </div>
@@ -96,7 +96,7 @@ export default function InstrucaoObra({ project }: InstrucaoObraProps) {
         />
 
         <Controller
-          name="medicao_responsavel"
+          name="instrucao_responsavel"
           control={control}
           render={({ field, fieldState }) => (
             <AtribuirResponsavel
