@@ -17,8 +17,9 @@ import { useForm } from "react-hook-form";
 const novoProjectSchema = z.object({
     installation_location: z.string().trim().min(1, "Informe o local de instalação."),
     production_deadline: z.number({
-    message: "Informe o prazo de produção.",
-    }).positive("O prazo de produção deve ser maior que zero.")
+        message: "Informe o prazo de produção.",
+    }).positive("O prazo de produção deve ser maior que zero."),
+    contato_cliente: z.string().trim().min(1, "Informe o seu contato")
 })
 
 type NovoProjectFormData = z.infer<typeof novoProjectSchema>;
@@ -30,6 +31,7 @@ interface NovoProps {
 export default function Novo({ project }: NovoProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -39,6 +41,7 @@ export default function Novo({ project }: NovoProps) {
         defaultValues: {
             installation_location: project.installation_location || "",
             production_deadline: project.production_deadline || 0,
+            contato_cliente: project.contato_cliente || ""
         }
     });
 
@@ -49,7 +52,8 @@ export default function Novo({ project }: NovoProps) {
             const payload = {
                 installation_location: data.installation_location,
                 production_deadline: data.production_deadline,
-                status: "LIBERADO_TRABALHO"
+                contato_cliente: data.contato_cliente,
+                status: "INSTRUCAO_OBRA"
             }
 
             await projectService.updateProject(project.id, payload);
@@ -96,6 +100,20 @@ export default function Novo({ project }: NovoProps) {
                         register={register}
                         errors={errors}
                     />
+                    <Card>
+                        <h1 className="text-xl text-[#191C1E]">Contato do cliente</h1>
+                        <input
+                            type="text"
+                            min="1"
+                            placeholder="Informe o contato"
+                            className="border rounded px-2 py-1"
+                            {...register("contato_cliente")}
+                        />
+                        {errors.contato_cliente && (
+                            <p className="text-xs text-red-500 mt-1">{errors.contato_cliente.message as string}</p>
+                        )}
+                    </Card>
+
                     <ButtonConfirm
                         type="submit"
                         disabled={isSubmitting}

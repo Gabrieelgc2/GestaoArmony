@@ -49,7 +49,7 @@ export default function ProjectTable() {
               <th className="px-6 py-3 font-semibold">Nº Pedido</th>
               <th className="px-6 py-3 font-semibold">Prazo de Produção</th>
               <th className="px-6 py-3 font-semibold">Local de Instalação</th>
-              <th className="px-6 py-3 font-semibold">Data</th>
+              <th className="px-6 py-3 font-semibold">Data prevista</th>
               <th className="px-6 py-3 font-semibold">Responsável</th>
               <th className="px-6 py-3 text-right font-semibold">Ação</th>
             </tr>
@@ -73,7 +73,9 @@ export default function ProjectTable() {
                   <td className="px-6 py-4 text-sm text-gray-600">{formatDate(currentPhase.date)}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{currentPhase.responsavel ?? "-"}</td>
                   <td className="px-3 py-4 text-right">
-                    <ButtonConfirm onClick={() => navigate(`/projeto/${p.id}`)}>Confirmar</ButtonConfirm>
+                  <ButtonConfirm onClick={() => navigate(`/projeto/${p.id}`)}>
+                   Confirmar
+                  </ButtonConfirm>
                   </td>
                 </tr>
               );
@@ -103,7 +105,6 @@ export default function ProjectTable() {
               <p><Hash className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Nº Pedido: </strong>{p.order_number ?? "-"}</p>
               <p><MapPin className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Data: </strong>{formatDate(currentPhase.date)}</p>
               <p><MapPin className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Responsável: </strong>{currentPhase.responsavel}</p>
-
             </div>
             <ButtonConfirm onClick={() => navigate(`/projeto/${p.id}`)}>Confirmar</ButtonConfirm>
           </div>

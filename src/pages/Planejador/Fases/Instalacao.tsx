@@ -38,7 +38,6 @@ export default function Instalacao({ project }: InstalacaoProps) {
       instalacao_responsavel: project.instalacao_responsavel || "",
     }
   });
-
   const onSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
@@ -55,9 +54,7 @@ export default function Instalacao({ project }: InstalacaoProps) {
       setIsSubmitting(true);
     }
   }
-
   return (
-
     <div className="relative min-h-screen bg-[#F8F9FB] px-10 pt-23 pb-28">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <Header>

@@ -18,6 +18,7 @@ export interface Project {
   entrega_obra_responsavel?: string | null;
   etapa_final_date?: string | null;
   etapa_final_responsavel?: string | null;
+  contato_cliente?: string | null;
   status: ProjectStatus;
 }
 
