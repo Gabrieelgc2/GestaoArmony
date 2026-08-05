@@ -5,7 +5,6 @@ import Card from "../../../components/ui/Card/Card";
 import Fase from "../../../components/ui/Fase";
 import Header from "../../../components/ui/Header";
 import ProjectCard from "../../../components/ui/ProjectCard";
-import DateInput from "@/components/ui/DateInput";
 import type { Project } from "@/types/project";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";

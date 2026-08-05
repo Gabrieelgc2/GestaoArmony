@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building, Handshake, MapPin, Hash, LogOut } from "lucide-react";
-import { supabase } from "@/supabaseClient";
 import ButtonConfirm from "@/components/ui/Button/ButtonConfirm";
 import { type ProjectStatus } from "@/types/project";
 import StatusFilter from "@/components/StatusFilter";
