@@ -26,6 +26,7 @@ export type ProjectStatus =
   | "LIBERADO_TRABALHO"
   | "INSTRUCAO_OBRA"
   | "MEDICAO"
+  | "INSTALACAO"
   | "PRE_INSTALACAO"
   | "POS_INSTALACAO"
   | "ENTREGA_OBRA"
@@ -33,10 +34,10 @@ export type ProjectStatus =
 
 export const PROJECT_STATUSES = [
   "NOVO",
-  "LIBERADO_TRABALHO",
   "INSTRUCAO_OBRA",
   "MEDICAO",
   "PRE_INSTALACAO",
+  "INSTALACAO",
   "POS_INSTALACAO",
   "ENTREGA_OBRA",
   "ETAPA_FINAL",
@@ -48,6 +49,7 @@ export const STATUS_LABELS: Record<string, string> = {
   INSTRUCAO_OBRA: "Instrução de obra",
   MEDICAO: "Medição",
   PRE_INSTALACAO: "Inspeção pré-instalação",
+  INSTALACAO: "Instalação",
   POS_INSTALACAO: "Inspeção pós-instalação",
   ENTREGA_OBRA: "Entrega de obra",
   ETAPA_FINAL: "Etapa final",

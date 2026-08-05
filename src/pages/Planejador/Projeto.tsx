@@ -9,6 +9,7 @@ import PosInstalacaoStep from "@/pages/Planejador/Fases/PosInstalacao";
 import EntregaObraStep from "@/pages/Planejador/Fases/EntregaObra";
 import Novo from "./Fases/Novo";
 import { projectService } from "./projectService";
+import Instalacao from "./Fases/Instalacao";
 
 export default function Projeto() {
   const { id } = useParams();
@@ -44,6 +45,9 @@ export default function Projeto() {
 
     case "PRE_INSTALACAO":
       return <PreInstalacaoStep project={project} />;
+
+    case "INSTALACAO":
+      return <Instalacao project={project} />;
 
     case "POS_INSTALACAO":
       return <PosInstalacaoStep project={project} />;
