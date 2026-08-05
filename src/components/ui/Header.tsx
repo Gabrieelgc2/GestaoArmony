@@ -1,19 +1,14 @@
-import { ArrowLeft } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { ArrowLeft, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   children: React.ReactNode;
-  backTo?: string;
 }
 
-export default function Header({ children, backTo }: HeaderProps) {
+export default function Header({ children }: HeaderProps) {
   const navigate = useNavigate();
-
-  const handleBack = () => {
-    if (backTo) {
-      navigate(backTo);
-    }
-  };
+  const { signOut, isLoggingOut } = useAuth();
 
   return (
 
@@ -23,8 +18,7 @@ export default function Header({ children, backTo }: HeaderProps) {
 
           <button
             type="button"
-            onClick={handleBack}
-            disabled={!backTo}
+            onClick={()=> navigate(-1)}
             className="rounded-full p-2 hover:bg-slate-100 disabled:cursor-default disabled:opacity-40"
           >
             <ArrowLeft className="h-5 w-5 text-[#003D9B]" />
@@ -36,9 +30,15 @@ export default function Header({ children, backTo }: HeaderProps) {
 
         </div>
 
-        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0052CC] text-xs font-bold text-[#C4D2FF]">
-          JD
-        </button>
+          <button
+            onClick={signOut}
+            disabled={isLoggingOut}
+            className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-[#003D9B] disabled:opacity-50"
+          >
+            <LogOut size={18} />
+            <span>{isLoggingOut ? "Saindo..." : "Sair"}</span>
+
+          </button>
 
       </header>
   )

@@ -4,8 +4,18 @@ export interface Project {
   order_number: string;
   production_deadline?: number | null;
   installation_location?: string | null;
-  medicao_date?: Date | null;
+  medicao_date?: string | null;
+  medicao_responsavel?: string | null;
   instrucao_date?: string | null;
+  instrucao_responsavel?: string | null;
+  pre_instalacao_date?: string | null;
+  pre_instalacao_responsavel?: string | null;
+  pos_instalacao_date?: string | null;
+  pos_instalacao_responsavel?: string | null;
+  entrega_obra_date?: string | null;
+  entrega_obra_responsavel?: string | null;
+  etapa_final_date?: string | null;
+  etapa_final_responsavel?: string | null;
   status: ProjectStatus;
 }
 

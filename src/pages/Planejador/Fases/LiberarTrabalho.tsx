@@ -2,14 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-import ButtonCancel from "../../../components/ui/Button/ButtonCancel";
 import ButtonConfirm from "../../../components/ui/Button/ButtonConfirm";
 import Card from "../../../components/ui/Card/Card";
 import Fase from "../../../components/ui/Fase";
 import Header from "../../../components/ui/Header";
 import ProjectCard from "../../../components/ui/ProjectCard";
-
 import type { Project } from "@/types/project";
 import { projectService } from "../projectService";
 import { useState } from "react";
@@ -22,10 +19,7 @@ type FormData = z.infer<typeof Dataschema>;
 
 export default function LiberarTrabalho({ project }: { project: Project }) {
 const [isSubmitting, setIsSubmitting] = useState(false);
-const initialDate = project.instrucao_date
-    ? project.instrucao_date.split("T")[0]
-    : "";
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
   const {
     register,
@@ -34,16 +28,15 @@ const initialDate = project.instrucao_date
   } = useForm<FormData>({
     resolver: zodResolver(Dataschema),
     defaultValues: {
-      instrucao_date: initialDate
+      instrucao_date: project.instrucao_date ? project.instrucao_date.split("T")[0] : ""
     },
   });
 
   const onSubmit = async (data: FormData) => {
     try {
     setIsSubmitting(true);
-    const formattedDate = new Date(`${data.instrucao_date}T12:00:00Z`).toISOString();
     const payload = {
-      instrucao_date: formattedDate,
+      instrucao_date: data.instrucao_date,
       status: "INSTRUCAO_OBRA"
     };
       await projectService.updateProject(project.id, payload);
@@ -96,11 +89,6 @@ const initialDate = project.instrucao_date
         <ButtonConfirm type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Atualizando..." : "Confirmar agendamento"}
         </ButtonConfirm>
-
-        <ButtonCancel 
-         onClick={() => navigate(-1)}>
-          Cancelar e voltar
-        </ButtonCancel>
       </form>
     </div>
   );

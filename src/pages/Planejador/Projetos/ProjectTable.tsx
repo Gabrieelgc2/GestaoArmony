@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building, Handshake, MapPin, Hash, LogOut } from "lucide-react";
+import { supabase } from "@/supabaseClient";
 import ButtonConfirm from "@/components/ui/Button/ButtonConfirm";
 import { type ProjectStatus } from "@/types/project";
 import StatusFilter from "@/components/StatusFilter";
 import { useAuth } from "@/hooks/useAuth";
 import { useProjects } from "@/hooks/useProject";
 import { EmptyState, ErrorState, LoadingState } from "@/components/FeedBackStates";
+import { formatDate, getCurrentPhaseInfo } from "@/utils/projectStatus";
 
 export default function ProjectTable() {
   const { projects, loading, error, refetch } = useProjects();
@@ -14,9 +16,9 @@ export default function ProjectTable() {
   const [activeStatus, setActiveStatus] = useState<ProjectStatus>("NOVO");
   const filteredProjects = projects.filter((p) => p.status === activeStatus);
   const navigate = useNavigate();
-  if(loading) return <LoadingState message="Carregando projetos..." />;
-  if(error) return <ErrorState message={error} onRetry={refetch} />;
-  if(projects.length === 0) return <EmptyState message="Nenhum projeto encontrado." />;
+  if (loading) return <LoadingState message="Carregando projetos..." />;
+  if (error) return <ErrorState message={error} onRetry={refetch} />;
+  if (projects.length === 0) return <EmptyState message="Nenhum projeto encontrado." />;
 
   return (
     <>
@@ -48,28 +50,35 @@ export default function ProjectTable() {
               <th className="px-6 py-3 font-semibold">Nº Pedido</th>
               <th className="px-6 py-3 font-semibold">Prazo de Produção</th>
               <th className="px-6 py-3 font-semibold">Local de Instalação</th>
+              <th className="px-6 py-3 font-semibold">Data</th>
+              <th className="px-6 py-3 font-semibold">Responsável</th>
               <th className="px-6 py-3 text-right font-semibold">Ação</th>
             </tr>
           </thead>
           <tbody>
-            {filteredProjects.map((p) => (
-              <tr key={p.id} className="transition hover:bg-slate-50/50 border-b border-gray-200">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-[#003D9B]">
-                      <Building className="h-5 w-5" />
+            {filteredProjects.map((p) => {
+              const currentPhase = getCurrentPhaseInfo(p);
+              return (
+                <tr key={p.id} className="transition hover:bg-slate-50/50 border-b border-gray-200">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-[#003D9B]">
+                        <Building className="h-5 w-5" />
+                      </div>
+                      <span className="font-medium text-[#191C1E]">{p.name_project}</span>
                     </div>
-                    <span className="font-medium text-[#191C1E]">{p.name_project}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{p.order_number ?? "-"}</td>
-                <td className="px-6 py-4 text-sm text-gray-600">{p.production_deadline ?? "-"}</td>
-                <td className="max-w-xs truncate px-6 py-4 text-sm text-gray-600">{p.installation_location ?? "-"}</td>
-                <td className="px-3 py-4 text-right">
-                  <ButtonConfirm onClick={() => navigate(`/projeto/${p.id}`)}>Confirmar</ButtonConfirm>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{p.order_number ?? "-"}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{p.production_deadline ?? "-"}</td>
+                  <td className="max-w-xs truncate px-6 py-4 text-sm text-gray-600">{p.installation_location ?? "-"}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{formatDate(currentPhase.date)}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{currentPhase.responsavel ?? "-"}</td>
+                  <td className="px-3 py-4 text-right">
+                    <ButtonConfirm onClick={() => navigate(`/projeto/${p.id}`)}>Confirmar</ButtonConfirm>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
