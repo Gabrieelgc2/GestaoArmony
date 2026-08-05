@@ -1,6 +1,6 @@
 // src/services/api.ts
 import axios from 'axios';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/supabaseClient';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'https://gestao-armony-backend.onrender.com',
