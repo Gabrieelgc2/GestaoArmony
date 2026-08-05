@@ -84,7 +84,9 @@ export default function ProjectTable() {
 
       {/* Versão Mobile */}
       <div className="grid gap-4 md:hidden">
-        {filteredProjects.map((p) => (
+        {filteredProjects.map((p) => {
+          const currentPhase = getCurrentPhaseInfo(p);
+          return (
           <div key={p.id} className="w-full space-y-4 rounded-2xl border border-[#DFE1E6] bg-white p-5 shadow-sm">
             <div className="flex items-start gap-3 border-b border-gray-100 pb-3">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-[#003D9B]">
@@ -99,10 +101,14 @@ export default function ProjectTable() {
               <p><Handshake className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Prazo: </strong>{p.production_deadline ?? "-"}</p>
               <p><MapPin className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Local: </strong>{p.installation_location ?? "-"}</p>
               <p><Hash className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Nº Pedido: </strong>{p.order_number ?? "-"}</p>
+              <p><MapPin className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Data: </strong>{formatDate(currentPhase.date)}</p>
+              <p><MapPin className="inline h-4 w-4 mr-2 text-[#737685]" /><strong>Responsável: </strong>{currentPhase.responsavel}</p>
+
             </div>
             <ButtonConfirm onClick={() => navigate(`/projeto/${p.id}`)}>Confirmar</ButtonConfirm>
           </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );

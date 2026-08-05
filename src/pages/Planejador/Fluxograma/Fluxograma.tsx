@@ -27,8 +27,7 @@ export default function Fluxograma() {
               icon={<ChartNoAxesColumn className="text-[#003D9B]" size={22} />}
               title="Status do fluxo"
             />
-
-
+            
           <Flowmain />
         </div>
       </Card>
