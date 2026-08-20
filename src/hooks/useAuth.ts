@@ -12,7 +12,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signOut();
       if (error) throw new Error(error.message);
 
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Erro ao sair:", error);
     } finally {

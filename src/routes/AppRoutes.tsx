@@ -1,38 +1,28 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "../pages/Planejador/Login/Login";
-// import PainelInstalador from "../pages/Instalador/Painel";
-// import PainelInspetor from "../pages/Inspetor/Painel";
-import Projeto from "@/pages/Planejador/Projeto";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "../components/forms/Login";
+import PainelPlanejador from "@/pages/Planejador/PainelPlanejador";
+import PainelInspetor from "@/pages/Inspetor/Painel/Painel_Inspetor";
+import { AuthContextProvider } from "@/contexts/AuthContext";
 import PrivateRoute from "@/components/PrivateRoute";
-import ProjectTable from "@/pages/Planejador/Projetos/ProjectTable";
 
 export function AppRoutes() {
   return (
- <BrowserRouter>
-  <Routes>
-    <Route path="/" element={<Login />} />
-    
-    <Route element={<PrivateRoute />}>
-    <Route
-    path="/painel"
-    element={<ProjectTable />}
-    />
-    <Route
-      path="/projeto/:id"
-      element={<Projeto />}
-    />
-    </Route>
+    <AuthContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
 
-    {/* <Route
-      path="/instalador/painel"
-      element={<PainelInstalador />}
-    /> */}
+          <Route element={<PrivateRoute allowedRoles={["PLANEJADOR"]} />}>
+            <Route path="/planejador" element={<PainelPlanejador />} />
+          </Route>
 
-    {/* <Route
-      path="/inspetor/painel"
-      element={<PainelInspetor />}
-    /> */}
-  </Routes>
-</BrowserRouter>
+          <Route element={<PrivateRoute allowedRoles={["INSPETOR"]} />}>
+            <Route path="/inspetor" element={<PainelInspetor />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthContextProvider>
   );
 }

@@ -1,6 +1,6 @@
-import Card from "../../../components/ui/Card/Card";
-import Footer from "../../../components/forms/layout/Footer";
-import LoginForm from "../../../components/forms/LoginForm";
+import Card from "../ui/Card/Card";
+import Footer from "./layout/Footer";
+import LoginForm from "./LoginForm";
 
 export default function Login() {
   return (
