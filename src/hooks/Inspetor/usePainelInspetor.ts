@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/supabaseClient";
-
 export function usePainelInspetor() {
   const [inspecoes, setInspecoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState<any>(null);
-  const [previsaoMedicao, setPrevisaoMedicao] = useState<{ [key: string]: string }>({});
+  const [previsaoMedicaoData, setPrevisaoMedicaoData] = useState<{ [key: string]: string }>({});
+  const [previsaoMedicaoHora, setPrevisaoMedicaoHora] = useState<{ [key: string]: string }>({});
   const [justificativas, setJustificativas] = useState<{ [key: string]: string }>({});
   const [modosRecusa, setModosRecusa] = useState<{ [key: string]: boolean }>({});
   const [salvandoId, setSalvandoId] = useState<string | null>(null);
-
+  
   // 1. Carregar Inspeções
   const carregarInspecoes = useCallback(async () => {
     setLoading(true);
@@ -28,12 +28,13 @@ export function usePainelInspetor() {
       .eq("id", user.id)
       .single();
 
-      setUserProfile(profile);
+    setUserProfile(profile);
 
     const { data } = await supabase
       .from("inspections")
       .select(`
         id,
+        inspetor_id,
         fase,
         data_prevista,
         data_realizada,
@@ -88,14 +89,16 @@ export function usePainelInspetor() {
     }
 
     if (inspecao.fase === "INSTRUCAO_OBRA") {
-      const dataPrevMedicao = previsaoMedicao[inspecao.id];
-      if (dataPrevMedicao) {
+      const dataPrevMedicao = previsaoMedicaoData[inspecao.id];
+      const horaPrevMedicao = previsaoMedicaoHora[inspecao.id];
+      const dataHoraIso = new Date(`${dataPrevMedicao}T${horaPrevMedicao}`);
+      if (dataPrevMedicao && horaPrevMedicao) {
         await supabase.from("inspections").insert([
           {
             project_id: inspecao.project_id,
             inspetor_id: inspecao.inspetor_id,
             fase: "MEDICAO",
-            data_prevista: dataPrevMedicao,
+            data_prevista: dataHoraIso,
             concluido: false,
             status_aprovacao: "PENDENTE",
           },
@@ -156,36 +159,14 @@ export function usePainelInspetor() {
     }
   };
 
-  // 4. Liberar Produção (+48h)
-  const handleLiberarProducao = async (projetoId: string) => {
-    setSalvandoId(projetoId);
-
-    const data48h = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
-
-    const { error } = await supabase
-      .from("projects")
-      .update({
-        liberado_producao: true,
-        data_liberacao_producao: data48h,
-        status: "PRODUCAO",
-      })
-      .eq("id", projetoId);
-
-    setSalvandoId(null);
-
-    if (error) {
-      alert("Erro ao liberar produção: " + error.message);
-    } else {
-      await carregarInspecoes();
-    }
-  };
-
   return {
     inspecoes,
     loading,
     userProfile,
-    previsaoMedicao,
-    setPrevisaoMedicao,
+    previsaoMedicaoData,
+    setPrevisaoMedicaoData,
+    previsaoMedicaoHora,
+    setPrevisaoMedicaoHora,
     justificativas,
     setJustificativas,
     modosRecusa,
@@ -194,6 +175,5 @@ export function usePainelInspetor() {
     carregarInspecoes,
     handleConfirmarData,
     handleRecusarData,
-    handleLiberarProducao,
   };
 }

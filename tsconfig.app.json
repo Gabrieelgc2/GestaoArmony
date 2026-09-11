@@ -6,7 +6,7 @@
     "lib": ["ES2023", "DOM"],
     "module": "esnext",
 
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
 
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
@@ -30,5 +30,5 @@
     "noFallthroughCasesInSwitch": true
   },
 
-  "include": ["src"]
+  "include": ["src", "tests/agendaInspetor.test.ts", "tests/disponibilidadeInspetor.test.ts"]
 }

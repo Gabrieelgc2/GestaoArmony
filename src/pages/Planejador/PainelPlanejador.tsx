@@ -1,13 +1,27 @@
-import { LogOut, Plus } from "lucide-react";
+import { Calendar, LogOut, Plus } from "lucide-react";
 import { ProjetoCard } from "./ProjetoCard";
 import { ModalCadastroProjeto } from "./ModalCadastroProjeto";
 import { FASES_CONFIG } from "../../utils/painelPlanejadorConfig";
 import { useAuth } from "@/hooks/useAuth";
 import { usePainelPlanejador } from "@/hooks/Planejador/usePainelPlanejador";
-
+import { useNavigate } from "react-router-dom";
 export default function PainelPlanejador() {
+  const navigate = useNavigate();
   const hook = usePainelPlanejador();
   const { signOut, isLoggingOut } = useAuth();
+  const projetoCardActions = {
+    inspetores: hook.inspetores,
+    datasPrevistas: hook.datasPrevistas,
+    setDatasPrevistas: hook.setDatasPrevistas,
+    horariosPrevistos: hook.horariosPrevistos,
+    setHorariosPrevistos: hook.setHorariosPrevistos,
+    inspetoresSelecionados: hook.inspetoresSelecionados,
+    setInspetoresSelecionados: hook.setInspetoresSelecionados,
+    salvandoId: hook.salvandoId,
+    onAgendarInspecao: hook.handleAgendarInspecao,
+    onAvancarFase: hook.handleAvancarFase,
+    verificarDisponibilidadeInspetor: hook.verificarDisponibilidadeInspetorLocal,
+  };
 
   if (hook.loading) {
     return (
@@ -31,6 +45,13 @@ export default function PainelPlanejador() {
           <div className="text-xs bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 font-medium text-gray-600">
             Total de Obras: <span className="font-bold text-gray-900">{hook.projetos.length}</span>
           </div>
+          <button
+          onClick={() => navigate("/planejador/agenda")}
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 active:scale-95 text-xs font-bold rounded-xl border border-indigo-200 transition cursor-pointer shadow-sm shadow-indigo-500/10"
+          >
+          <Calendar size={16} />
+          <span>Acessar agenda</span>
+          </button>
           <button
             onClick={() => hook.setModalCriarAberto(true)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-sm shadow-blue-500/20"
@@ -67,8 +88,12 @@ export default function PainelPlanejador() {
                     Nenhuma obra nesta etapa
                   </div>
                 ) : (
-                  projetosDaFase.map((projeto: any) => (
-                    <ProjetoCard key={projeto.id} projeto={projeto} hook={hook} />
+                  projetosDaFase.map((projeto) => (
+                    <ProjetoCard
+                      key={projeto.id}
+                      projeto={projeto}
+                      actions={projetoCardActions}
+                    />
                   ))
                 )}
               </div>

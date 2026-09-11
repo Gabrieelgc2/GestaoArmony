@@ -1,29 +1,35 @@
 import type { ReactNode } from "react";
 
 interface InputProps {
+  id?: string;
   label?: string;
   type?: string;
   placeholder?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  onRightIconClick?: () => void;
+  rightIconLabel?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean
 }
 
 export default function Input({
+  id,
   label,
   type = "text",
   placeholder,
   leftIcon,
   rightIcon,
+  onRightIconClick,
+  rightIconLabel = "Ação do campo",
   value,
   onChange,
   required = false
 }: InputProps) {
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium text-gray-700">
+      <label htmlFor={id} className="text-sm font-medium text-gray-700">
         {label}
       </label>
 
@@ -35,6 +41,7 @@ export default function Input({
         )}
 
         <input
+          id={id}
           type={type}
           value={value}
           placeholder={placeholder}
@@ -44,9 +51,14 @@ export default function Input({
         />
 
         {rightIcon && (
-          <span className="ml-2 cursor-pointer text-gray-500">
+          <button
+            type="button"
+            onClick={onRightIconClick}
+            aria-label={rightIconLabel}
+            className="ml-2 text-gray-500 cursor-pointer"
+          >
             {rightIcon}
-          </span>
+          </button>
         )}
       </div>
     </div>

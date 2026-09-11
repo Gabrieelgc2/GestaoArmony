@@ -1,14 +1,14 @@
-import Checkbox from "../Checkbox/Checkbox";
 import Input from "../ui/Input/Input";
-import { Mail, Lock, Eye } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { UserAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import ButtonConfirm from "../ui/Button/ButtonConfirm";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(false);
   const { signInUser, profile, loading } = UserAuth();
@@ -67,6 +67,7 @@ export default function LoginForm() {
       )}
 
       <Input
+        id="login-email"
         label="E-mail"
         placeholder="name@company.com"
         type="email"
@@ -77,22 +78,24 @@ export default function LoginForm() {
       />
 
       <Input
+        id="login-password"
         label="Senha"
-        type="password"
+        type={mostrarSenha ? "text" : "password"}
         placeholder="••••••••"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         leftIcon={<Lock size={18} />}
-        rightIcon={<Eye size={18} />}
+        rightIcon={mostrarSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+        onRightIconClick={() => setMostrarSenha((visivel) => !visivel)}
+        rightIconLabel={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
         required
       />
 
       <div className="flex justify-between items-center">
-        <Checkbox label="Lembrar-me" />
 
-        <a href="#" className="text-blue-800 text-sm hover:underline">
+        <Link to="/esquecer" className="text-blue-800 text-sm hover:underline">
           Esqueceu sua senha?
-        </a>
+        </Link>
       </div>
       <ButtonConfirm type="submit" disabled={carregando}>
         {carregando ? "Entrando..." : "Entrar →"}

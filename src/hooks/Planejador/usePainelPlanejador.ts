@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type { FormEvent } from "react";
-import { supabase } from "@/supabaseClient";
 import {
   DEFAULT_NOVO_PROJETO,
   getProximoStatus,
@@ -9,6 +8,15 @@ import {
   type Profile,
   type Projeto,
 } from "../../utils/painelPlanejadorConfig";
+import { useAutoAvancoFase } from "./useAutoAvancoFase";
+import {
+  atualizarStatusProjeto,
+  carregarDadosPlanejador,
+  criarProjeto,
+  salvarAgendamentoInspecao,
+  verificarDisponibilidadeInspetor,
+} from "@/services/planejadorService";
+import { inspetorEstaDisponivel } from "@/utils/agendaUtils";
 
 export function usePainelPlanejador() {
   const [planejadorNome, setPlanejadorNome] = useState("Planejador");
@@ -21,6 +29,7 @@ export function usePainelPlanejador() {
   const [datasPrevistas, setDatasPrevistas] = useState<Record<string, string>>({});
   const [inspetoresSelecionados, setInspetoresSelecionados] = useState<Record<string, string>>({});
   const [salvandoId, setSalvandoId] = useState<string | null>(null);
+  const [horariosPrevistos, setHorariosPrevistos] = useState<Record<string, string>>({});
 
   const atualizarCampoNovoProjeto = <K extends keyof NovoProjetoForm>(campo: K, valor: NovoProjetoForm[K]) => {
     setNovoProjeto((prev) => ({ ...prev, [campo]: valor }));
@@ -28,53 +37,42 @@ export function usePainelPlanejador() {
 
   const carregarDados = useCallback(async () => {
     setLoading(true);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user) {
-      const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
-      setPlanejadorNome(profile?.full_name || "Planejador");
-    }
-
-    const { data: listaInspetores } = await supabase.from("profiles").select("id, full_name").eq("role", "INSPETOR");
-    setInspetores(listaInspetores || []);
-
-    const { data: listaProjetos } = await supabase
-      .from("projects")
-      .select(`
-        id,
-        name_project,
-        order_number,
-        installation_location,
-        prazo_acordado_dias,
-        contato_client,
-        data_medicao_final,
-        data_limite_entrega,
-        data_liberacao_producao,
-        liberado_producao,
-        status,
-        inspections(
-          id,
-          fase,
-          data_prevista,
-          data_realizada,
-          justificativa,
-          status_aprovacao,
-          concluido,
-          inspetor_id,
-          profiles:inspetor_id (full_name)
-        )
-      `)
-      .order("created_at", { ascending: false });
-
-    setProjetos((listaProjetos || []) as unknown as Projeto[]);
+    const dados = await carregarDadosPlanejador();
+    setPlanejadorNome(dados.nome);
+    setInspetores(dados.inspetores);
+    setProjetos(dados.projetos);
     setLoading(false);
   }, []);
 
   useEffect(() => {
     void carregarDados();
   }, [carregarDados]);
+
+  const todasInspecoes = useMemo(
+    () => projetos.flatMap((projeto) => projeto.inspections || []),
+    [projetos],
+  );
+
+  const verificarDisponibilidadeInspetorLocal = useCallback(
+    (inspetorId: string, projetoId: string, faseAtual: FaseKey) => {
+      const dataAgendada = datasPrevistas[projetoId];
+      const horaAgendada = horariosPrevistos[projetoId];
+
+      if (!dataAgendada || !horaAgendada) return true;
+
+      const projeto = projetos.find((item) => item.id === projetoId);
+      const inspecaoExistente = projeto?.inspections?.find((item) => item.fase === faseAtual);
+
+      return inspetorEstaDisponivel(
+        inspetorId,
+        todasInspecoes,
+        dataAgendada,
+        horaAgendada,
+        inspecaoExistente?.id,
+      );
+    },
+    [datasPrevistas, horariosPrevistos, projetos, todasInspecoes],
+  );
 
   const handleCriarProjeto = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -86,16 +84,7 @@ export function usePainelPlanejador() {
     }
 
     setSalvandoNovoProjeto(true);
-    const { error } = await supabase.from("projects").insert([
-      {
-        name_project: name_project.trim(),
-        prazo_acordado_dias: Number(prazo_acordado_dias),
-        order_number: order_number.trim(),
-        installation_location: installation_location.trim(),
-        contato_client: contato_client.trim(),
-        status: "NOVO",
-      },
-    ]);
+    const { error } = await criarProjeto(novoProjeto);
     setSalvandoNovoProjeto(false);
 
     if (error) {
@@ -110,6 +99,7 @@ export function usePainelPlanejador() {
 
   const handleAgendarInspecao = async (projetoId: string, faseAtual: FaseKey) => {
     const dataAgendada = datasPrevistas[projetoId];
+    const horaAgendada = horariosPrevistos[projetoId];
     const inspetorId = inspetoresSelecionados[projetoId];
 
     if (!dataAgendada) {
@@ -117,45 +107,57 @@ export function usePainelPlanejador() {
       return;
     }
 
+    if (!horaAgendada) {
+      alert("Por favor, selecione o horário.");
+      return;
+    }
+
+    const dataHoraIso = new Date(`${dataAgendada}T${horaAgendada}`);
     const projeto = projetos.find((p) => p.id === projetoId);
     const inspecaoExistente = projeto?.inspections?.find((i) => i.fase === faseAtual);
+    const inspetorEfetivo = inspetorId || inspecaoExistente?.inspetor_id;
 
     setSalvandoId(projetoId);
-    let error = null;
 
-    if (inspecaoExistente) {
-      const { error: errUpdate } = await supabase
-        .from("inspections")
-        .update({
-          data_prevista: dataAgendada,
-          status_aprovacao: "PENDENTE",
-          justificativa: null,
-          concluido: false,
-          ...(inspetorId ? { inspetor_id: inspetorId } : {}),
-        })
-        .eq("id", inspecaoExistente.id);
+    if (!inspetorEfetivo) {
+      alert("Por favor, selecione o inspetor responsável.");
+      setSalvandoId(null);
+      return;
+    }
 
-      error = errUpdate;
-    } else {
-      if (!inspetorId) {
-        alert("Por favor, selecione o inspetor responsável.");
+    if (!verificarDisponibilidadeInspetorLocal(inspetorEfetivo, projetoId, faseAtual)) {
+      alert("Este inspetor já possui uma vistoria Pendente ou Atrasada neste horário.");
+      setSalvandoId(null);
+      return;
+    }
+
+    try {
+      const { disponivel } = await verificarDisponibilidadeInspetor({
+        inspetorId: inspetorEfetivo,
+        dataAgendada,
+        horaAgendada,
+        excluirInspecaoId: inspecaoExistente?.id,
+      });
+
+      if (!disponivel) {
+        alert("Este inspetor já possui uma vistoria Pendente ou Atrasada neste horário.");
         setSalvandoId(null);
         return;
       }
-
-      const { error: errInsert } = await supabase.from("inspections").insert([
-        {
-          project_id: projetoId,
-          inspetor_id: inspetorId,
-          fase: faseAtual,
-          data_prevista: dataAgendada,
-          concluido: false,
-          status_aprovacao: "PENDENTE",
-        },
-      ]);
-
-      error = errInsert;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Erro desconhecido";
+      alert("Erro ao verificar disponibilidade do inspetor: " + message);
+      setSalvandoId(null);
+      return;
     }
+
+    const { error } = await salvarAgendamentoInspecao({
+      projetoId,
+      fase: faseAtual,
+      inspecaoId: inspecaoExistente?.id,
+      inspetorId: inspetorEfetivo,
+      dataHora: dataHoraIso,
+    });
 
     setSalvandoId(null);
 
@@ -176,6 +178,12 @@ export function usePainelPlanejador() {
       return copy;
     });
 
+    setHorariosPrevistos((prev) => {
+      const copy = { ...prev };
+      delete copy[projetoId];
+      return copy;
+    });
+
     await carregarDados();
   };
 
@@ -184,16 +192,25 @@ export function usePainelPlanejador() {
     if (!proximoStatus) return;
 
     setSalvandoId(projeto.id);
-    const { error } = await supabase.from("projects").update({ status: proximoStatus }).eq("id", projeto.id);
+    setProjetos((prev) => prev.map((item) =>
+      item.id === projeto.id ? { ...item, status: proximoStatus } : item,
+    ));
+
+    const { error } = await atualizarStatusProjeto(projeto.id, proximoStatus);
     setSalvandoId(null);
 
     if (error) {
+      setProjetos((prev) => prev.map((item) =>
+        item.id === projeto.id ? { ...item, status: projeto.status } : item,
+      ));
       alert("Erro ao avançar de fase: " + error.message);
       return;
     }
 
     await carregarDados();
   };
+
+  useAutoAvancoFase(projetos, handleAvancarFase);
 
   return {
     planejadorNome,
@@ -207,6 +224,8 @@ export function usePainelPlanejador() {
     salvandoNovoProjeto,
     datasPrevistas,
     setDatasPrevistas,
+    horariosPrevistos,
+    setHorariosPrevistos,
     inspetoresSelecionados,
     setInspetoresSelecionados,
     salvandoId,
@@ -214,5 +233,6 @@ export function usePainelPlanejador() {
     handleAgendarInspecao,
     handleAvancarFase,
     carregarDados,
+    verificarDisponibilidadeInspetorLocal,
   };
 }
