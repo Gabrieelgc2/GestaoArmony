@@ -29,7 +29,7 @@ export function Agendada({ inspecao }: AgendadaProps) {
       ) : (
         <div className="pt-0.5">
           <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded">
-            <AlertCircle size={11} /> Aguardando confirmação do inspetor
+            <AlertCircle size={11} /> Aguardando confirmação do engenheiro
           </span>
         </div>
       )}

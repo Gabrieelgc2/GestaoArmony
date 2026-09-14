@@ -120,13 +120,13 @@ export function usePainelPlanejador() {
     setSalvandoId(projetoId);
 
     if (!inspetorEfetivo) {
-      alert("Por favor, selecione o inspetor responsável.");
+      alert("Por favor, selecione o engenheiro responsável.");
       setSalvandoId(null);
       return;
     }
 
     if (!verificarDisponibilidadeInspetorLocal(inspetorEfetivo, projetoId, faseAtual)) {
-      alert("Este inspetor já possui uma vistoria Pendente ou Atrasada neste horário.");
+      alert("Este engenheiro já possui uma vistoria Pendente ou Atrasada neste horário.");
       setSalvandoId(null);
       return;
     }
@@ -140,13 +140,13 @@ export function usePainelPlanejador() {
       });
 
       if (!disponivel) {
-        alert("Este inspetor já possui uma vistoria Pendente ou Atrasada neste horário.");
+        alert("Este engenheiro já possui uma vistoria Pendente ou Atrasada neste horário.");
         setSalvandoId(null);
         return;
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Erro desconhecido";
-      alert("Erro ao verificar disponibilidade do inspetor: " + message);
+      alert("Erro ao verificar disponibilidade do engenheiro: " + message);
       setSalvandoId(null);
       return;
     }

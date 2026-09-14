@@ -100,7 +100,7 @@ export function CalendarioPlanejador({ hook }: { hook: any }) {
                                 onChange={(e) => setInspetorFiltro(e.target.value)}
                                 className="bg-transparent text-gray-700 font-medium outline-none cursor-pointer"
                             >
-                                <option value="TODOS">Todos os Inspetores</option>
+                                <option value="TODOS">Todos os engenheiros</option>
                                 {listaInspetores.map((insp) => (
                                     <option key={insp.id} value={insp.id}>
                                         {insp.nome}
