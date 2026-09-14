@@ -124,7 +124,6 @@ export function FormularioRelatorioMedicao({ onSalvar }: Props) {
               : "border-gray-200 hover:border-gray-300"
           }`}
         >
-          {/* Ajustado: object-contain garante que todo o desenho técnico caiba sem cortes */}
           <img
             src={item.imagemUrl}
             alt={item.titulo}
