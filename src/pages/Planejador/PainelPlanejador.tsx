@@ -33,15 +33,14 @@ export default function PainelPlanejador() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)] p-4 max-w-[1700px] mx-auto space-y-4">
-      {/* Topo */}
       <header className="flex flex-wrap items-center justify-between gap-4 bg-white px-6 py-4 rounded-2xl border border-gray-200 shadow-sm shrink-0">
         <div>
           <h1 className="text-xl font-black tracking-tight text-gray-900">Planejamento de Obras</h1>
           <p className="text-xs text-gray-500 mt-0.5">
-            Bem-vindo, <span className="font-semibold text-gray-800">{hook.planejadorNome}</span>
+          Bem-vindo, <span className="font-semibold text-gray-800">{hook.planejadorNome}</span>
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="text-xs bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 font-medium text-gray-600">
             Total de Obras: <span className="font-bold text-gray-900">{hook.projetos.length}</span>
           </div>
@@ -56,7 +55,7 @@ export default function PainelPlanejador() {
             onClick={() => hook.setModalCriarAberto(true)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-sm shadow-blue-500/20"
           >
-            <Plus size={16} /> Cadastrar Nova Obra
+          <Plus size={16} /> Cadastrar Nova Obra
           </button>
           <button
             onClick={signOut}
@@ -102,7 +101,6 @@ export default function PainelPlanejador() {
         })}
       </main>
 
-      {/* Modal Conectado */}
       <ModalCadastroProjeto hook={hook} />
     </div>
   );
