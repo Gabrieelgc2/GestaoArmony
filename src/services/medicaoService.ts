@@ -9,10 +9,11 @@ export async function salvarRelatorioMedicao(payload: RelatorioPayload) {
     const {error} = await supabase
     .from("relatorios_medicao")
     .upsert({
+    inspetor_id: user.id,
     project_id: payload.projetoId,
-    inspection_id: payload.inspecaoId,
+    inspecao_id: payload.inspecaoId,
     calhas: payload.calhas,
-    soleiras_porta_giro: payload.soleira_porta_giro,
+    soleira_porta_giro: payload.soleira_porta_giro,
     acabamento: payload.acabamento,
     trilho_especial: payload.trilho_especial,
     observacoes: payload.observacoes,

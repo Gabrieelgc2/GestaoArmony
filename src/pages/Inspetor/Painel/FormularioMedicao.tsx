@@ -105,31 +105,47 @@ export function FormularioRelatorioMedicao({ onSalvar }: Props) {
         </div>
       </div>
 
-      {/* 3. ACABAMENTOS */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">Acabamentos</label>
-        <div className="grid grid-cols-2 gap-3">
-          {GUIA_CONFIG.acabamentos.map((item) => {
-            const ativo = form.acabamento === item.valor;
-            return (
-              <button
-                type="button"
-                key={item.valor}
-                onClick={() => atualizarCampo("acabamento", item.valor)}
-                className={`p-2.5 rounded-xl border flex flex-col items-center gap-2 transition text-left cursor-pointer ${
-                  ativo ? "border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20" : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <img src={item.imagemUrl} alt={item.titulo} className="h-28 w-full object-cover rounded-lg bg-gray-100" />
-                <div className="flex items-center justify-between w-full px-1">
-                  <span className="text-xs font-semibold text-gray-800">{item.titulo}</span>
-                  <input type="checkbox" checked={ativo} readOnly className="h-4 w-4 rounded text-blue-600 focus:ring-0 cursor-pointer" />
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+  {/* 3. ACABAMENTOS */}
+<div className="space-y-2">
+  <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+    Acabamentos
+  </label>
+  <div className="grid grid-cols-2 gap-3">
+    {GUIA_CONFIG.acabamentos.map((item) => {
+      const ativo = form.acabamento === item.valor;
+      return (
+        <button
+          type="button"
+          key={item.valor}
+          onClick={() => atualizarCampo("acabamento", item.valor)}
+          className={`p-2.5 rounded-xl border flex flex-col items-center gap-2 transition text-left cursor-pointer ${
+            ativo
+              ? "border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20"
+              : "border-gray-200 hover:border-gray-300"
+          }`}
+        >
+          {/* Ajustado: object-contain garante que todo o desenho técnico caiba sem cortes */}
+          <img
+            src={item.imagemUrl}
+            alt={item.titulo}
+            className="h-28 w-full object-contain p-1 rounded-lg bg-gray-50"
+          />
+          <div className="flex items-center justify-between w-full px-1">
+            <span className="text-xs font-semibold text-gray-800">
+              {item.titulo}
+            </span>
+            <input
+              type="checkbox"
+              checked={ativo}
+              readOnly
+              className="h-4 w-4 rounded text-blue-600 focus:ring-0 cursor-pointer"
+            />
+          </div>
+        </button>
+      );
+    })}
+  </div>
+</div>
 
       {/* 4. TRILHOS ESPECIAIS */}
       <div className="space-y-2">

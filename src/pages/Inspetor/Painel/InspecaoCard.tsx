@@ -33,6 +33,7 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
   const [expandirGuia, setExpandirGuia] = useState(false);
   const [relatorioEnviado, setRelatorioEnviado] = useState(false);
   const ehFaseMedicao = inspecao.fase === "MEDICAO";
+  const podeAvancar = !ehFaseMedicao || relatorioEnviado;
   const handleSalvarRelatorio = async (dadosForm: GuiaMedicaoForm) => {
     await salvarRelatorioMedicao({
       ...dadosForm,
@@ -161,14 +162,23 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
           )}
 
           {!estaRecusando ? (
+            <div className="space-y-2">
+              {ehFaseMedicao && !relatorioEnviado && (
+                  <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1.5 rounded-lg w-fit">
+                  ⚠️ Preencha e salve a Guia de Medição antes de confirmar.
+                  </p>
+              )}
+
             <div className="flex flex-wrap gap-2">
               <button
-                disabled={salvandoId === inspecao.id}
+                type="button"
+                disabled={salvandoId === inspecao.id || !podeAvancar}
                 onClick={() => handleConfirmarData(inspecao)}
                 className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition cursor-pointer shadow-sm disabled:bg-gray-300"
               >
               <CheckCircle2 size={15} /> Confirmar Data Prevista
               </button>
+
               <button
                 type="button"
                 onClick={() => setModosRecusa({ ...modosRecusa, [inspecao.id]: true })}
@@ -176,6 +186,7 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
               >
                 <RotateCcw size={15} /> Reagendar / Justificar
               </button>
+            </div>
             </div>
           ) : (
             <div className="bg-rose-50/60 border border-rose-200 p-4 rounded-xl space-y-3">

@@ -24,19 +24,19 @@ export interface RelatorioPayload extends GuiaMedicaoForm {
 
 export const GUIA_CONFIG = {
     calhas: [
-        { valor: "UMA_CALHA" as OpcaoCalha, titulo: "1 Calha", imagemUrl: "/images/guia-medicao/calha-1.png" },
-        { valor: "DUAS_CALHAS" as OpcaoCalha, titulo: "2 Calhas", imagemUrl: "/images/guia-medicao/calha-2.png " }
+        { valor: "UMA_CALHA" as OpcaoCalha, titulo: "1 Calha", imagemUrl: "/guia/1_calha.jpeg" },
+        { valor: "DUAS_CALHAS" as OpcaoCalha, titulo: "2 Calhas", imagemUrl: "/guia/2_calha.jpeg" }
     ],
     soleiras: [
-        { valor: "SEM" as OpcaoSoleira, titulo: "Sem Soleira", imagemUrl: "/images/guia-medicao/soleira-sem.png" },
-        { valor: "COM" as OpcaoSoleira, titulo: "Com Soleira", imagemUrl: "/images/guia-medicao/soleira-com.png" }
+        { valor: "SEM" as OpcaoSoleira, titulo: "Sem Soleira", imagemUrl: "/guia/com_soleira.jpeg" },
+        { valor: "COM" as OpcaoSoleira, titulo: "Com Soleira", imagemUrl: "/guia/sem_soleira.jpeg" }
     ],
     acabamentos: [
-        { valor: "EIXO_VAO" as OpcaoAcabamento, titulo: "Eixo do Vão", imagemUrl: "/images/guia-medicao/acabamento-eixo.png" },
-        { valor: "FACEADO_VAO" as OpcaoAcabamento, titulo: "Faceado do Vão", imagemUrl: "/images/guia-medicao/acabamento-faceado.png" }
+        { valor: "EIXO_VAO" as OpcaoAcabamento, titulo: "Eixo do Vão", imagemUrl: "/guia/eixo_vao.png" },
+        { valor: "FACEADO_VAO" as OpcaoAcabamento, titulo: "Faceado do Vão", imagemUrl: "/guia/faceado_vao.jpeg" }
     ],
     trilhos: [
-        { valor: "TRILHO_PRIME" as OpcaoTrilho, titulo: "Trilho Prime", imagemUrl: "/images/guia-medicao/trilho-prime.png" },
-        { valor: "TRILHO_INVISIVEL" as OpcaoTrilho, titulo: "Trilho Invisível", imagemUrl: "/images/guia-medicao/trilho-invisivel.png" }
+        { valor: "TRILHO_PRIME" as OpcaoTrilho, titulo: "Trilho Prime", imagemUrl: "/guia/Trilho_prime.jpeg" },
+        { valor: "TRILHO_INVISIVEL" as OpcaoTrilho, titulo: "Trilho Invisível", imagemUrl: "/guia/Trilho_invisivel.png" }
     ],
 };
