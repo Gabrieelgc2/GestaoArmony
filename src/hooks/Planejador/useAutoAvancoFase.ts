@@ -18,13 +18,13 @@ export function useAutoAvancoFase(
       const inspecaoAtual = obterInspecaoAtual(projeto);
       if (
         !processando.current.has(projeto.id) &&
-        projetoPodeAvancar(projeto, inspecaoAtual) &&
         projeto.status !== "NOVO" &&
-        projeto.status !== "PRODUCAO"
+        projeto.status !== "PRODUCAO" &&
+        projetoPodeAvancar(projeto, inspecaoAtual)
       ) {
         processando.current.add(projeto.id);
         void onAvancarRef.current(projeto).finally(() => {
-          processando.current.delete(projeto.id);
+        processando.current.delete(projeto.id);
         });
       }
     }

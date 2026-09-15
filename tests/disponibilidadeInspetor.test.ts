@@ -5,6 +5,7 @@ import {
   inspetorTemConflito,
   isInspecaoAtiva,
 } from "@/utils/agendaUtils";
+import { projetoPodeAvancar } from "@/utils/projeto.utils";
 
 const INSPETOR_A = "inspetor-a";
 const INSPETOR_B = "inspetor-b";
@@ -61,6 +62,16 @@ describe("disponibilidadeInspetor", () => {
     ];
 
     expect(inspetorEstaDisponivel(INSPETOR_A, inspecoes, "2026-09-10", "14:00")).toBe(true);
+  });
+
+  it("deve permitir iniciar obra quando o projeto está NOVO sem inspeção concluída", () => {
+    const projeto = {
+      id: "proj-1",
+      status: "NOVO",
+      inspections: [],
+    } as any;
+
+    expect(projetoPodeAvancar(projeto, undefined)).toBe(true);
   });
 
   it("deve ignorar a inspeção sendo reagendada", () => {
