@@ -1,6 +1,6 @@
 import { StatusBadge } from "@/components/StatusBadge";
 import { salvarRelatorioMedicao } from "@/services/medicaoService";
-import type { GuiaMedicaoForm } from "@/types/relatorioMedicao";
+import type { GuiaMedicaoCompleta } from "@/types/relatorioMedicao";
 import { formatarDataHora, formatarDataSimples } from "@/utils/DataConfig";
 import { 
   CheckCircle2, 
@@ -34,7 +34,7 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
   const [relatorioEnviado, setRelatorioEnviado] = useState(false);
   const ehFaseMedicao = inspecao.fase === "MEDICAO";
   const podeAvancar = !ehFaseMedicao || relatorioEnviado;
-  const handleSalvarRelatorio = async (dadosForm: GuiaMedicaoForm) => {
+  const handleSalvarRelatorio = async (dadosForm: GuiaMedicaoCompleta) => {
     await salvarRelatorioMedicao({
       ...dadosForm,
       projetoId: inspecao.projects?.id,
@@ -106,7 +106,7 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
         </div>
       )}
 
-      {ehFaseMedicao && (
+      {ehFaseMedicao && !inspecao.concluido && (
         <div className="border-t border-gray-100 pt-3 space-y-3">
           {!relatorioEnviado ? (
             <>
