@@ -12,5 +12,5 @@ export function filtrarProjetosPorBusca(projetos: Projeto[], busca: string): Pro
     const nomeMatch = p.name_project?.toLowerCase().includes(termoLimpo);
     const pedidoMatch = String(p.order_number ?? "").toLowerCase().includes(termoLimpo);
     return Boolean(nomeMatch || pedidoMatch);
-    })
+})
 }

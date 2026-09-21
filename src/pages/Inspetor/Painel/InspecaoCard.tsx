@@ -15,7 +15,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useState } from "react";
-import { FormularioRelatorioMedicao } from "./FormularioMedicao";
+import { FormularioRelatorioMedicao } from "../Medicao/FormularioMedicao";
 export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
   const {
     salvandoId,

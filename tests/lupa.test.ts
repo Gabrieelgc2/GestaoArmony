@@ -40,7 +40,7 @@ it("TESTE 5: deve encontrar quando busca por termo presente em nome ou número d
     expect(porNome[0].id).toBe(porNumero[0].id);
 });
 it("TESTE 6: não deve encontrar quando nome e número informados são totalmente inexistentes", () => {
-    const resultado = filtrarProjetosPorBusca(mockProjetos, "Hotel Fantasma 000000")
+    const resultado = filtrarProjetosPorBusca(mockProjetos, "Hotel Fantasma 000000");
     expect(resultado).toHaveLength(0);
 });
 });
