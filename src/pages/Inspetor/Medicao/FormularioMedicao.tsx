@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { CheckCircle2, AlertCircle, Plus } from "lucide-react";
 import { type GuiaMedicaoCompleta, type ItemMedicaoForm } from "@/types/relatorioMedicao";
 import { CardItemMedicao } from "./CardItem";
+import { InputAnexoMedicao } from "./Fotos/Anexar";
 
 interface Props {
   onSalvar: (dados: GuiaMedicaoCompleta) => Promise<void>;
@@ -26,12 +27,13 @@ const itemVazio: ItemMedicaoForm = {
 
 export function FormularioRelatorioMedicao({ onSalvar }: Props) {
   const [observacoesGerais, setObservacoesGerais] = useState("");
-  const [itens, setItens] = useState<ItemMedicaoForm[]>([{ ...itemVazio, descricao_item: "Item 1" }]);
+  const [itens, setItens] = useState<ItemMedicaoForm[]>([{ ...itemVazio}]);
   const [salvando, setSalvando] = useState(false);
+  const [fotos, setFotos] = useState<File[]>([]);
   const [erro, setErro] = useState<string | null>(null);
 
   const adicionarItem = () => {
-    setItens((prev) => [...prev, { ...itemVazio, descricao_item: `Item ${prev.length + 1}` }]);
+    setItens((prev) => [ ...prev, { ...itemVazio }]);
   };
 
   const removerItem = (index: number) => {
@@ -64,7 +66,7 @@ export function FormularioRelatorioMedicao({ onSalvar }: Props) {
 
     try {
       setSalvando(true);
-      await onSalvar({ observacoesGerais, itens });
+      await onSalvar({ observacoesGerais, itens, fotos });
     } catch (err: any) {
       setErro(err.message || "Erro ao salvar relatório.");
     } finally {
@@ -118,6 +120,8 @@ export function FormularioRelatorioMedicao({ onSalvar }: Props) {
           className="w-full border border-gray-200 rounded-xl p-3 text-xs bg-white outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
+      <InputAnexoMedicao fotos={fotos} onFotosChange={setFotos} />
 
       <button
         type="submit"

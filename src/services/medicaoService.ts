@@ -7,7 +7,7 @@ export async function salvarRelatorioMedicao(payload: RelatorioPayload) {
     throw new Error("Usuário não autenticado.");
   }
 
-  // 1. Grava o cabeçalho do relatório
+  // 1. Grava ou atualiza o cabeçalho do relatório
   const { data: relatorio, error: errRelatorio } = await supabase
     .from("relatorios_medicao")
     .upsert(
@@ -28,10 +28,14 @@ export async function salvarRelatorioMedicao(payload: RelatorioPayload) {
   }
 
   // 2. Remove itens antigos para regravar em lote limpo
-  await supabase
+  const { error: errDeleteItens } = await supabase
     .from("itens_medicao")
     .delete()
     .eq("relatorio_id", relatorio.id);
+
+  if (errDeleteItens) {
+    throw new Error(`Erro ao limpar itens antigos: ${errDeleteItens.message}`);
+  }
 
   // 3. Formata e insere a lista de itens
   const itensParaInserir = payload.itens.map((item, idx) => ({
@@ -59,5 +63,43 @@ export async function salvarRelatorioMedicao(payload: RelatorioPayload) {
 
   if (errItens) {
     throw new Error(`Erro ao salvar itens de medição: ${errItens.message}`);
+  }
+
+  // 4. Upload das fotos em lote para o Supabase Storage
+  if (payload.fotos && payload.fotos.length > 0) {
+    const uploads = payload.fotos.map(async (file) => {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `${relatorio.id}/${fileName}`;
+
+      // Upload do arquivo para o bucket 'fotos_medicao'
+      const { error: uploadError } = await supabase.storage
+        .from("fotos_medicao")
+        .upload(filePath, file, { cacheControl: "3600", upsert: false });
+
+      if (uploadError) {
+        throw new Error(`Erro ao enviar a imagem ${file.name}: ${uploadError.message}`);
+      }
+
+      // Obtém a URL pública gerada
+      const { data: urlData } = supabase.storage
+        .from("fotos_medicao")
+        .getPublicUrl(filePath);
+
+      // Registra a referência da foto na tabela 'medicao_fotos'
+      const { error: errFotoDb } = await supabase
+        .from("medicao_fotos")
+        .insert({
+          medicao_id: relatorio.id,
+          url_foto: urlData.publicUrl,
+          nome_arquivo: file.name,
+        });
+
+      if (errFotoDb) {
+        throw new Error(`Erro ao registrar foto no banco: ${errFotoDb.message}`);
+      }
+    });
+
+    await Promise.all(uploads);
   }
 }

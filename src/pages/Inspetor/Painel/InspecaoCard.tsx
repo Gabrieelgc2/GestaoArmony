@@ -132,7 +132,7 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
           /* FEEDBACK VISUAL APÓS GRAVAÇÃO */
           <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-semibold flex items-center gap-2">
           <CheckCircle2 size={16} className="text-emerald-600" />
-          <span>Guia de medição e gravado com sucesso!</span>
+          <span>Guia de medição gravado com sucesso!</span>
           </div>
           )}
           </div>

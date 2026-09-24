@@ -19,6 +19,7 @@ export interface ItemMedicaoForm {
 export interface GuiaMedicaoCompleta {
   observacoesGerais: string;
   itens: ItemMedicaoForm[];
+  fotos: File[];
 }
 
 export interface RelatorioPayload extends GuiaMedicaoCompleta {

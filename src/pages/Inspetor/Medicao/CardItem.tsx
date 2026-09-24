@@ -15,7 +15,7 @@ export function CardItemMedicao({ item, index, totalItens, onRemover, onAtualiza
     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5 relative">
       <div className="flex items-center justify-between border-b pb-3 border-gray-100">
         <span className="text-xs font-extrabold text-blue-900 bg-blue-50 px-3 py-1 rounded-lg">
-          Item #{index + 1}
+        Item #{index + 1}
         </span>
         {totalItens > 1 && (
           <button
@@ -96,7 +96,6 @@ export function CardItemMedicao({ item, index, totalItens, onRemover, onAtualiza
           />
         </div>
 
-        {/* Checkboxes organizados na linha de baixo */}
         <div className="col-span-2 md:col-span-6 flex flex-wrap items-center gap-4 pt-2">
           <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-700 cursor-pointer">
             <input
