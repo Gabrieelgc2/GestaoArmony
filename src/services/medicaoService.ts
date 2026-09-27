@@ -37,33 +37,36 @@ export async function salvarRelatorioMedicao(payload: RelatorioPayload) {
     throw new Error(`Erro ao limpar itens antigos: ${errDeleteItens.message}`);
   }
 
-  // 3. Formata e insere a lista de itens
-  const itensParaInserir = payload.itens.map((item, idx) => ({
-    relatorio_id: relatorio.id,
-    ordem: idx + 1,
-    descricao_item: item.descricao_item,
-    quantidade: Number(item.quantidade) || 1,
-    largura: Number(item.largura) || 0,
-    altura: Number(item.altura) || 0,
-    peitoril: Number(item.peitoril) || 0,
-    giro: item.giro,
-    tem_chave: item.tem_chave,
-    nao_drenar: item.nao_drenar,
-    tem_pelicula: item.tem_pelicula,
-    calhas: item.calhas,
-    soleira_porta_giro: item.soleira_porta_giro,
-    acabamento: item.acabamento,
-    trilho_especial: item.trilho_especial,
-    observacao_item: item.observacao_item,
-  }));
+const itensDoPayload = payload.itens ?? [];
 
-  const { error: errItens } = await supabase
+const itensParaInserir = itensDoPayload.map((item, idx) => ({
+  relatorio_id: relatorio.id,
+  ordem: idx + 1,
+  descricao_item: item.descricao_item,
+  quantidade: Number(item.quantidade) || 1,
+  largura: Number(item.largura) || 0,
+  altura: Number(item.altura) || 0,
+  peitoril: Number(item.peitoril) || 0,
+  giro: item.giro ? item.giro : null,
+  tem_chave: item.tem_chave ?? false,
+  nao_drenar: item.nao_drenar ?? false,
+  tem_pelicula: item.tem_pelicula ?? false,
+  calhas: item.calhas,
+  soleira_porta_giro: item.soleira_porta_giro,
+  acabamento: item.acabamento,
+  trilho_especial: item.trilho_especial,
+  observacao_item: item.observacao_item || null,
+}));
+
+if (itensParaInserir.length > 0) {
+    const { error: errItens } = await supabase
     .from("itens_medicao")
     .insert(itensParaInserir);
 
-  if (errItens) {
+    if (errItens) {
     throw new Error(`Erro ao salvar itens de medição: ${errItens.message}`);
   }
+}
 
   // 4. Upload das fotos em lote para o Supabase Storage
   if (payload.fotos && payload.fotos.length > 0) {
