@@ -9,17 +9,17 @@ export interface ItemMedicaoForm {
   tem_chave: boolean;
   nao_drenar: boolean;
   tem_pelicula: boolean;
-  calhas: "1_CALHA" | "2_CALHAS" | null;
+  calhas: "UMA_CALHA" | "DUAS_CALHAS" | null;
   soleira_porta_giro: "SEM" | "COM" | null;
   acabamento: "EIXO_VAO" | "FACEADO_VAO" | null;
-  trilho_especial: "SOLEIRA_PRIME" | "TRILHO_INVISIVEL" | null;
-  observacao_item: string;
+  trilho_especial: "TRILHO_PRIME" | "TRILHO_INVISIVEL" | null;
+  observacao_item?: string;
 }
 
 export interface GuiaMedicaoCompleta {
-  observacoesGerais: string;
-  itens: ItemMedicaoForm[];
-  fotos: File[];
+  observacoesGerais?: string;
+  itens?: ItemMedicaoForm[];
+  fotos?: File[];
 }
 
 export interface RelatorioPayload extends GuiaMedicaoCompleta {

@@ -3,6 +3,7 @@ import { CheckCircle2, AlertCircle, Plus } from "lucide-react";
 import { type GuiaMedicaoCompleta, type ItemMedicaoForm } from "@/types/relatorioMedicao";
 import { CardItemMedicao } from "./CardItem";
 import { InputAnexoMedicao } from "./Fotos/Anexar";
+import { relatorioMedicaoSchema } from "@/utils/relatorioSchema";
 
 interface Props {
   onSalvar: (dados: GuiaMedicaoCompleta) => Promise<void>;
@@ -10,7 +11,7 @@ interface Props {
 
 const itemVazio: ItemMedicaoForm = {
   descricao_item: "",
-  quantidade: 1,
+  quantidade: "",
   largura: "",
   altura: "",
   peitoril: "",
@@ -52,21 +53,19 @@ export function FormularioRelatorioMedicao({ onSalvar }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    for (let i = 0; i < itens.length; i++) {
-      const it = itens[i];
-      if (!it.descricao_item || !it.quantidade || !it.largura || !it.altura) {
-        setErro(`Preencha Descrição, Qtd, Largura e Altura do ${it.descricao_item || `Item ${i + 1}`}.`);
-        return;
-      }
-      if (!it.calhas || !it.soleira_porta_giro || !it.acabamento || !it.trilho_especial) {
-        setErro(`Selecione as 4 especificações técnicas do ${it.descricao_item || `Item ${i + 1}`}.`);
-        return;
-      }
-    }
+    const resultado = relatorioMedicaoSchema.safeParse({
+      observacoesGerais,
+      itens,
+    });
 
+    if(!resultado.success){
+      const primeiroErro = resultado.error.issues[0]?.message;
+      setErro(primeiroErro || "Preencha todos os campos obrigatórios do relatório.");
+      return;
+    }
     try {
       setSalvando(true);
-      await onSalvar({ observacoesGerais, itens, fotos });
+      await onSalvar({ ...resultado.data, fotos });
     } catch (err: any) {
       setErro(err.message || "Erro ao salvar relatório.");
     } finally {
