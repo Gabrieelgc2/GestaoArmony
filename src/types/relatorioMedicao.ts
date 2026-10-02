@@ -1,3 +1,4 @@
+import { z } from "zod";
 export interface ItemMedicaoForm {
   id?: string;
   descricao_item: string;
@@ -5,6 +6,7 @@ export interface ItemMedicaoForm {
   largura: number | "";
   altura: number | "";
   peitoril: number | "";
+  ambiente: string;
   giro: string;
   tem_chave: boolean;
   nao_drenar: boolean;
@@ -15,6 +17,31 @@ export interface ItemMedicaoForm {
   trilho_especial: "TRILHO_PRIME" | "TRILHO_INVISIVEL" | null;
   observacao_item?: string;
 }
+
+export const itemVazio: ItemMedicaoForm = {
+  ambiente: "",
+  descricao_item: "",
+  quantidade: "",
+  largura: "",
+  altura: "",
+  peitoril: "",
+  giro: "",
+  tem_chave: false,
+  nao_drenar: false,
+  tem_pelicula: false,
+  calhas: null,
+  soleira_porta_giro: null,
+  acabamento: null,
+  trilho_especial: null,
+  observacao_item: "",
+};
+
+
+export const qtdAdicionarLoteSchema = z.coerce
+  .number({ message: "Digite uma quantidade válida." })
+  .int("A quantidade deve ser um número inteiro.")
+  .min(1, "A quantidade deve ser pelo menos 1.")
+  .max(50, "Máximo de 50 itens por vez.");
 
 export interface GuiaMedicaoCompleta {
   observacoesGerais?: string;

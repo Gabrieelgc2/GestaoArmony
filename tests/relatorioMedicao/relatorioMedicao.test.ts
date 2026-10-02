@@ -1,9 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { itemMedicaoSchema } from "../src/utils/relatorioSchema"
+import { itemMedicaoSchema } from "../../src/utils/relatorioSchema"
 describe("Testes de relatório de medição", () => {
   // Objeto base VÁLIDO para ser clonado/modificado em cada teste
   const itemValidoBase = {
-    descricao_item: "Janela Sacada",
+    descricao_item: "Janela",
+    ambiente: "Sala",
     quantidade: 2,
     largura: 1500,
     altura: 2100,

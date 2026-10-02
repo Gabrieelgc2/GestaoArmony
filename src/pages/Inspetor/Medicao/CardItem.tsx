@@ -12,7 +12,9 @@ interface Props {
 
 export function CardItemMedicao({ item, index, totalItens, onRemover, onAtualizar }: Props) {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5 relative">
+    <div
+     id={`card-item-${index + 1}`}
+     className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5 relative">
       <div className="flex items-center justify-between border-b pb-3 border-gray-100">
         <span className="text-xs font-extrabold text-blue-900 bg-blue-50 px-3 py-1 rounded-lg">
         Item #{index + 1}
@@ -29,16 +31,27 @@ export function CardItemMedicao({ item, index, totalItens, onRemover, onAtualiza
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-3">
         <div className="col-span-1 sm:col-span-2">
-          <label className="text-[10px] font-bold uppercase text-gray-500 block mb-1">Descrição *</label>
-          <input
-            type="text"
-            placeholder="Ex: J01 - Suíte"
-            value={item.descricao_item}
-            onChange={(e) => onAtualizar(index, "descricao_item", e.target.value)}
-            className="w-full border border-gray-200 rounded-xl p-2 text-xs font-semibold bg-white outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <label className="text-[10px] font-bold uppercase text-gray-500 block mb-1">Descrição *</label>
+        <input
+        type="text"
+        placeholder="Ex: J01"
+        value={item.descricao_item}
+        onChange={(e) => onAtualizar(index, "descricao_item", e.target.value)}
+        className="w-full border border-gray-200 rounded-xl p-2 text-xs font-semibold bg-white outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        </div>
+
+        <div className="col-span-2">
+        <label className="text-[10px] font-bold uppercase text-gray-500 block-mb-1">Ambiente</label>
+        <input
+        type="text"
+        placeholder="Sala"
+        value={item.ambiente}
+        onChange={(e) => onAtualizar(index, "ambiente", e.target.value)}
+        className="w-full border border-gray-200 rounded-xl p-2 text-xs font-semibold bg-white"
+        />
         </div>
 
         <div className="col-span-1">

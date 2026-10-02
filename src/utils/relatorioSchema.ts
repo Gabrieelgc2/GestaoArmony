@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const itemMedicaoSchema = z.object({
     descricao_item: z.string({message: "Descrição inválida"}).min(1, "A descrição do item é obrigatória"),
+    ambiente: z.string({message: "Ambiente inválido"}).min(1, "Informe o ambiente"),
     quantidade: z.coerce.number({message: "Quantidade inválida"}).min(1, "A quantidade deve ser no mínimo 1"),
     largura: z.coerce.number({ message: "Largura inválida" }).min(1, "Informe a largura"),
     altura: z.coerce.number({ message: "Altura inválida" }).min(1, "Informe a altura"),

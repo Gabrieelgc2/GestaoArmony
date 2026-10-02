@@ -42,6 +42,7 @@ const itensDoPayload = payload.itens ?? [];
 const itensParaInserir = itensDoPayload.map((item, idx) => ({
   relatorio_id: relatorio.id,
   ordem: idx + 1,
+  ambiente: item.ambiente,
   descricao_item: item.descricao_item,
   quantidade: Number(item.quantidade) || 1,
   largura: Number(item.largura) || 0,
