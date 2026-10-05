@@ -47,11 +47,11 @@ export function FormularioRelatorioMedicao({ onSalvar }: Props) {
 
       {itens.length >= 1 && (
         <div className="flex items-center justify-between bg-white px-5 py-3 rounded-xl border border-gray-200 shadow-sm">
-          <span className="text-xs font-bold text-gray-600">
+          <span className="text-xs font-bold text-gray-600" data-testid="contador-itens">
             Exibindo <span className="text-blue-600 font-extrabold">{itensVisiveis.length}</span> de{" "}
             <span className="text-gray-900 font-extrabold">{itens.length}</span> itens
           </span>
-          <BuscaItemIndex totalItens={itens.length} onBuscar={lidarComBusca} />
+          <BuscaItemIndex totalItens={itens.length} onBuscar={lidarComBusca} onRemover={removerItem} />
         </div>
       )}
 

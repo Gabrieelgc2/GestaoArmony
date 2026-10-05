@@ -15,19 +15,15 @@ export function useRelatorioMedicao(onSalvar: (dados: GuiaMedicaoCompleta) => Pr
   const [erro, setErro] = useState<string | null>(null);
   const [qtdAdicionar, setQtdAdicionar] = useState<string>("1");
   const [erroQtd, setErroQtd] = useState<string>("");
-
+  
   const itensVisiveis = itens.slice(0, limiteExibicao);
 
   const carregarMais = () => setLimiteExibicao((prev) => prev + PASSO_PAGINACAO);
 
   const adicionarItensEmLote = () => {
     setErroQtd("");
-
-  // Valida a string do input contra o schema Zod
-  const resultado = qtdAdicionarLoteSchema.safeParse(qtdAdicionar);
-
-  if (!resultado.success) {
-    // Extrai a primeira mensagem de erro capturada pelo Zod
+    const resultado = qtdAdicionarLoteSchema.safeParse(qtdAdicionar);
+    if (!resultado.success) {
     const mensagemErro = resultado.error.issues[0]?.message;
     setErroQtd(mensagemErro || "Quantidade inválida.");
     return;
@@ -53,6 +49,7 @@ export function useRelatorioMedicao(onSalvar: (dados: GuiaMedicaoCompleta) => Pr
       setLimiteExibicao(numItem);
     }
   };
+
 
   useEffect(() => {
     if (itemParaRolar === null) return;
