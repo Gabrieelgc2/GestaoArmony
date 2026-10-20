@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {type PresetOption, type DateRange, getPresetDateRange} from "./dateLogic";
+import {type PresetOption, type DateRange, getPresetDateRange} from "./DateLogic";
 
 interface DateRangePopoverProps {
     onApply: (range: DateRange) => void;
