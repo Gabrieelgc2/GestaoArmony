@@ -15,7 +15,7 @@ export function usePainelInspetor() {
     if (!("Notification" in window) || Notification.permission !== "granted") return;
     if (!("serviceWorker" in navigator)) return;
 
-    const hojeStr = new Date().toISOString().split("T")[0];
+    const hojeStr = new Date().toISOString().split("")[0];
     const ultimoDisparo = localStorage.getItem("ultimo_disparo_notificacoes");
 
     if (ultimoDisparo === hojeStr) return;

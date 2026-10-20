@@ -1,22 +1,19 @@
 export interface ObraNotificar {
   id: string;
   nome: string;
-  data_prevista: string; // Ex: "2026-11-25 17:57:00-03"
+  data_prevista: string;
 }
 
 export function gerarPayloadNotificacao(obra: ObraNotificar) {
   if (!obra.data_prevista) return null;
 
-
   const parteData = obra.data_prevista.split(" ")[0]; 
   const [ano, mes, dia] = parteData.split("-").map(Number);
-
-  
   const dataPrevista = new Date(ano, mes - 1, dia);
   
   const agora = new Date();
   agora.setHours(0, 0, 0, 0);
-
+  
   // 3. Diferença exata em dias
   const diferencaMs = dataPrevista.getTime() - agora.getTime();
   const diasRestantes = Math.round(diferencaMs / (1000 * 60 * 60 * 24));
