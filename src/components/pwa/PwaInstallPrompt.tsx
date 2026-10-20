@@ -1,6 +1,7 @@
 import { Download, Smartphone } from "lucide-react";
 import Modal from "@/components/ui/Modal/Modal";
 import { usePwaInstall } from "@/hooks/usePwaInstall";
+import { BotaoNotificar } from "../BotaoNotificar";
 
 export default function PwaInstallPrompt() {
   const { showPrompt, isIos, canInstall, installApp, dismissPrompt } =
@@ -57,6 +58,7 @@ export default function PwaInstallPrompt() {
               {isIos ? "Entendi" : "Baixar app"}
             </button>
           )}
+          <BotaoNotificar />
         </div>
       </div>
     </Modal>

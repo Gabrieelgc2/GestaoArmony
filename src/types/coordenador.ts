@@ -1,6 +1,6 @@
 export type StatusObra = 'Todos' | 'Recusados' | 'Em revisão' | 'Liberado'
 
-export interface Obra {
+export interface ObraCoordenador {
     id: string;
     numero: string;
     nomeCliente: string;
