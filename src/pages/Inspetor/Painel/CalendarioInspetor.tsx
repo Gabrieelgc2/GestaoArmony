@@ -150,7 +150,6 @@ export function CalendarioInspetor({ inspecoes, hook }: { inspecoes: any[]; hook
             {inspecoesDoDia.length} {inspecoesDoDia.length === 1 ? "item" : "itens"}
           </span>
         </div>
-
         {inspecoesDoDia.length > 0 ? (
           inspecoesDoDia.map((insp) => (
             <InspecaoCard key={insp.id} inspecao={insp} hook={hook} />

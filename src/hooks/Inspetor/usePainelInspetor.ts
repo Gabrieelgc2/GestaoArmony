@@ -15,7 +15,7 @@ export function usePainelInspetor() {
     if (!("Notification" in window) || Notification.permission !== "granted") return;
     if (!("serviceWorker" in navigator)) return;
 
-    const hojeStr = new Date().toISOString().split(" ")[0];
+    const hojeStr = new Date().toISOString().split("T")[0];
     const ultimoDisparo = localStorage.getItem("ultimo_disparo_notificacoes");
 
     if (ultimoDisparo === hojeStr) return;
@@ -36,14 +36,14 @@ export function usePainelInspetor() {
             data_prevista: dataAlvo,
           });
           if (payload) {
-            await reg.showNotification(payload.titulo);
+            await reg.showNotification(payload.titulo, payload.options);
             notificouAlguma = true;
           }
         }
       }
       if (notificouAlguma) {
-        localStorage.setItem("ultimo_disparo_notificacoes", hojeStr);
-      }
+      localStorage.setItem("ultimo_disparo_notificacoes", hojeStr);
+    }
     } catch (error) {
       console.error("Erro ao disparar notificações:", error);
     }
