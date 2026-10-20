@@ -7,13 +7,13 @@ export interface ObraNotificar {
 export function gerarPayloadNotificacao(obra: ObraNotificar) {
     const agora = new Date();
     const dataPrevista = new Date(obra.data_prevista);
-    
+
     agora.setHours(0, 0, 0, 0);
     dataPrevista.setHours(0, 0, 0, 0);
 
     const diferencaMs = dataPrevista.getTime() - agora.getTime();
     const diasRestantes = Math.ceil(diferencaMs / (1000 * 60 * 60 * 24));
-
+    if (diasRestantes > 10) return null;
     if (diasRestantes < 0) {
         const diasAtraso = Math.abs(diasRestantes);
         return {

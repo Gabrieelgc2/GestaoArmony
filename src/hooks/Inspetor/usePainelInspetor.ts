@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/supabaseClient";
+import { gerarPayloadNotificacao } from "@/components/CalcularNotificao";
 export function usePainelInspetor() {
   const [inspecoes, setInspecoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -9,7 +10,45 @@ export function usePainelInspetor() {
   const [justificativas, setJustificativas] = useState<{ [key: string]: string }>({});
   const [modosRecusa, setModosRecusa] = useState<{ [key: string]: boolean }>({});
   const [salvandoId, setSalvandoId] = useState<string | null>(null);
-  
+
+  const dispararNotificacoesEngenheiro = async (dadosInspecoes: any[]) => {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    if (!("serviceWorker" in navigator)) return;
+
+    const hojeStr = new Date().toISOString().split("T")[0];
+    const ultimoDisparo = localStorage.getItem("ultimo_disparo_notificacoes");
+
+    if (ultimoDisparo === hojeStr) return;
+
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      let notificouAlguma = false;
+      for (const item of dadosInspecoes) {
+        if (item.concluido) continue;
+
+        const dataAlvo = item.data_prevista;
+        const nomeObra = item.projects?.name_project;
+
+        if (dataAlvo) {
+          const payload = gerarPayloadNotificacao({
+            id: item.id,
+            nome: nomeObra,
+            data_prevista: dataAlvo,
+          });
+          if (payload) {
+            await reg.showNotification(payload.titulo);
+            notificouAlguma = true;
+          }
+        }
+      }
+      if (notificouAlguma) {
+        localStorage.setItem("ultimo_disparo_notificacoes", hojeStr);
+      }
+    } catch (error) {
+      console.error("Erro ao disparar notificações:", error);
+    }
+  };
+
   // 1. Carregar Inspeções
   const carregarInspecoes = useCallback(async () => {
     setLoading(true);
@@ -22,7 +61,7 @@ export function usePainelInspetor() {
       return;
     }
 
-    const { data: profile} = await supabase
+    const { data: profile } = await supabase
       .from("profiles")
       .select("full_name")
       .eq("id", user.id)
@@ -61,6 +100,7 @@ export function usePainelInspetor() {
 
     setInspecoes(data || []);
     setLoading(false);
+    await dispararNotificacoesEngenheiro(data || []);
   }, []);
 
   useEffect(() => {
