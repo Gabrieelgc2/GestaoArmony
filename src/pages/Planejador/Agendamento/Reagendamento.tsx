@@ -46,7 +46,7 @@ export function Reagendamento({ projeto, inspecao, actions }: ReagendamentoProps
         />
         {inspetorIndisponivel && (
           <p className="text-[10px] text-rose-700 font-medium">
-            O inspetor responsável já possui vistoria Pendente ou Atrasada neste horário.
+            O inspetor responsável já possui uma vistoria ativa a menos de 2 horas deste horário.
           </p>
         )}
         <button

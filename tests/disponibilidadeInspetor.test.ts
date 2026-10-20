@@ -35,6 +35,14 @@ describe("disponibilidadeInspetor", () => {
     expect(horariosConflitam("2026-09-10", "14:00", "2026-09-10T09:00:00")).toBe(false);
   });
 
+  it("deve detectar conflito com menos de duas horas", () => {
+    expect(horariosConflitam("2026-09-10", "16:00", "2026-09-10T15:00:00")).toBe(true);
+  });
+
+  it("deve permitir exatamente duas horas entre vistorias", () => {
+    expect(horariosConflitam("2026-09-10", "14:00", "2026-09-10T12:00:00")).toBe(false);
+  });
+
   it("deve marcar inspetor indisponível se houver vistoria Pendente no mesmo horário", () => {
     const inspecoes = [
       {

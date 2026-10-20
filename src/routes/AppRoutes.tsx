@@ -14,7 +14,7 @@ export function AppRoutes() {
         <Routes>
           <Route path="/" element={<Login />} />
 
-            <Route path="/esquecer" element={<EsquecerSenha />} />
+          <Route path="/esquecer" element={<EsquecerSenha />} />
           <Route element={<PrivateRoute allowedRoles={["PLANEJADOR"]} />}>
             <Route path="/planejador" element={<PainelPlanejador />} />
           </Route>
@@ -23,8 +23,8 @@ export function AppRoutes() {
             <Route path="/inspetor" element={<PainelInspetor />} />
           </Route>
 
-          <Route element={<PrivateRoute allowedRoles={["PLANEJADOR"]}/>}>
-          <Route path="/planejador/agenda" element={<AgendaPlanejadorPage />} />
+          <Route element={<PrivateRoute allowedRoles={["PLANEJADOR"]} />}>
+            <Route path="/planejador/agenda" element={<AgendaPlanejadorPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -31,11 +31,31 @@ export function extrairDataHorarioLocal(isoString: string): { data: string; hora
   return { data: `${year}-${month}-${day}`, hora };
 }
 
-export function horariosConflitam(dataAgendada: string, horaAgendada: string, dataPrevista: string): boolean {
-  const slot = extrairDataHorarioLocal(dataPrevista);
-  if (!slot) return false;
+export function horariosConflitam(
+  dataAgendada: string, 
+  horaAgendada: string, 
+  dataPrevista: string  
+): boolean {
+  if (!dataAgendada || !horaAgendada || !dataPrevista) return false;
 
-  return slot.data === dataAgendada && slot.hora === horaAgendada;
+  const isoNormalizada = dataPrevista.replace(" ", "T");
+  const dataExistente = new Date(isoNormalizada);
+
+  if (Number.isNaN(dataExistente.getTime())) {
+    console.error("Data do banco inválida:", dataPrevista);
+    return false;
+  }
+
+  const [ano, mes, dia] = dataAgendada.split("-").map(Number);
+  const [hora, minuto] = horaAgendada.split(":").map(Number);
+  const dataNova = new Date(ano, mes - 1, dia, hora, minuto);
+
+  if (Number.isNaN(dataNova.getTime())) return false;
+
+  const diferencaEmMs = Math.abs(dataNova.getTime() - dataExistente.getTime());
+  const diferencaEmMinutos = diferencaEmMs / (1000 * 60);
+
+  return diferencaEmMinutos < 120;
 }
 
 export function inspetorTemConflito(

@@ -126,7 +126,7 @@ export function usePainelPlanejador() {
     }
 
     if (!verificarDisponibilidadeInspetorLocal(inspetorEfetivo, projetoId, faseAtual)) {
-      alert("Este engenheiro já possui uma vistoria Pendente ou Atrasada neste horário.");
+      alert("Este inspetor já possui uma vistoria ativa a menos de 2 horas deste horário.");
       setSalvandoId(null);
       return;
     }
@@ -140,7 +140,7 @@ export function usePainelPlanejador() {
       });
 
       if (!disponivel) {
-        alert("Este engenheiro já possui uma vistoria Pendente ou Atrasada neste horário.");
+        alert("Este inspetor já possui uma vistoria ativa a menos de 2 horas deste horário.");
         setSalvandoId(null);
         return;
       }

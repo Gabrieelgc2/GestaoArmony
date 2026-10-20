@@ -91,15 +91,21 @@ export async function verificarDisponibilidadeInspetor({
   horaAgendada: string;
   excluirInspecaoId?: string;
 }): Promise<{ disponivel: boolean }> {
-  const inicioDia = new Date(`${dataAgendada}T00:00:00`);
-  const fimDia = new Date(`${dataAgendada}T23:59:59`);
+  const dataHoraAgendada = new Date(`${dataAgendada}T${horaAgendada}`);
+  if (Number.isNaN(dataHoraAgendada.getTime())) {
+    throw new Error("A data ou o horário do agendamento é inválido.");
+  }
+
+  const margemConflitoMs = 2 * 60 * 60 * 1000;
+  const inicioBusca = new Date(dataHoraAgendada.getTime() - margemConflitoMs);
+  const fimBusca = new Date(dataHoraAgendada.getTime() + margemConflitoMs);
 
   const { data, error } = await supabase
     .from("inspections")
     .select("id, inspetor_id, data_prevista, concluido, status_aprovacao")
     .eq("inspetor_id", inspetorId)
-    .gte("data_prevista", inicioDia.toISOString())
-    .lte("data_prevista", fimDia.toISOString());
+    .gte("data_prevista", inicioBusca.toISOString())
+    .lte("data_prevista", fimBusca.toISOString());
 
   if (error) {
     throw error;

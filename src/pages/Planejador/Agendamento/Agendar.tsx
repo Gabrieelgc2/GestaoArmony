@@ -59,17 +59,17 @@ export function Agendar({ projeto, actions }: AgendarProps) {
         {actions.inspetores.map((inspetor) => {
           const disponivel = !dataSelecionada || !horarioSelecionado
             || actions.verificarDisponibilidadeInspetor(inspetor.id, projeto.id, faseAtual);
-
+        
           return (
             <option key={inspetor.id} value={inspetor.id} disabled={!disponivel}>
-              {inspetor.full_name}{!disponivel ? " — Indisponível neste horário" : ""}
+              {inspetor.full_name}{!disponivel ? " — Indisponível (intervalo mínimo de 2h)" : ""}
             </option>
           );
         })}
       </select>
       {inspetorIndisponivel && (
         <p className="text-[10px] text-rose-700 font-medium">
-          O inspetor selecionado já possui uma obra agendada neste horário.
+          O inspetor selecionado já possui uma vistoria ativa a menos de 2 horas deste horário.
         </p>
       )}
       <button
