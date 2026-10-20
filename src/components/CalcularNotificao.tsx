@@ -10,11 +10,10 @@ export function gerarPayloadNotificacao(obra: ObraNotificar) {
   const parteData = obra.data_prevista.split(" ")[0]; 
   const [ano, mes, dia] = parteData.split("-").map(Number);
   const dataPrevista = new Date(ano, mes - 1, dia);
-  
+
   const agora = new Date();
   agora.setHours(0, 0, 0, 0);
-  
-  // 3. Diferença exata em dias
+
   const diferencaMs = dataPrevista.getTime() - agora.getTime();
   const diasRestantes = Math.round(diferencaMs / (1000 * 60 * 60 * 24));
 
