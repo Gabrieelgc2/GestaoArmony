@@ -1,12 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "../supabaseClient";
 
-export type UserRole = "PLANEJADOR" | "INSPETOR";
+export type UserRole = 'engenheiro' | 'master' | 'planejador';
 
 export interface UserProfile {
-  id: string;
-  full_name: string;
-  role: UserRole;
+  usuario_id: string;
+  perfil_codigo: UserRole;
 }
 
 interface AuthContextType {
@@ -36,12 +35,12 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const LoadRole = async (userId: string) => {
     try {
       const { data } = await supabase
-        .from("profiles")
-        .select("id, full_name, role")
-        .eq("id", userId)
+        .from("usuario_perfil")
+        .select("usuario_id, perfil_codigo")
+        .eq("usuario_id", userId)
         .single()
       console.log("Perfil vindo do banco:", data);
-      console.log("Role real:", data?.role);
+      console.log("Role real:", data?.perfil_codigo);
       setProfile(data || null);
     } catch {
       setProfile(null);

@@ -5,6 +5,12 @@ interface PrivateRouteProps {
   allowedRoles?: UserRole[];
 }
 
+const rotaPorPerfil: Record<UserRole, string> = {
+  planejador: "/planejador",
+  engenheiro: "/inspetor",
+  master: "/administrador",
+};
+
 export default function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
   const { session, profile, loading } = UserAuth();
 
@@ -23,9 +29,9 @@ export default function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
   }
 
   // 3. Checagem de Cargo: se a rota exige cargos específicos e o usuário não tem o cargo certo
-  if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {
+  if (allowedRoles && profile && !allowedRoles.includes(profile.perfil_codigo)) {
     // Redireciona o usuário para o painel correto dele
-    const rotaCorreta = profile.role === "PLANEJADOR" ? "/planejador" : "/inspetor";
+    const rotaCorreta = rotaPorPerfil[profile.perfil_codigo];
     return <Navigate to={rotaCorreta} replace />;
   }
 

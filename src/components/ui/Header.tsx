@@ -11,7 +11,6 @@ export default function Header({ children }: HeaderProps) {
   const { signOut, isLoggingOut } = useAuth();
 
   return (
-
 <header className="absolute top-0 left-0 flex h-16 w-full items-center justify-between bg-white px-10 shadow-sm">
 
         <div className="flex items-center gap-4">

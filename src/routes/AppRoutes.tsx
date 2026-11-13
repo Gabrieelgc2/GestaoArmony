@@ -6,6 +6,7 @@ import PrivateRoute from "@/components/PrivateRoute";
 import { PainelInspetor } from "@/pages/Inspetor/Painel/PainelInspetor";
 import AgendaPlanejadorPage from "@/pages/Planejador/Calendario/AgendaPlanejador";
 import EsquecerSenha from "@/components/forms/EsquecerSenha";
+import { AdministracaoPage } from "@/pages/Administrador/main";
 
 export function AppRoutes() {
   return (
@@ -15,16 +16,20 @@ export function AppRoutes() {
           <Route path="/" element={<Login />} />
 
           <Route path="/esquecer" element={<EsquecerSenha />} />
-          <Route element={<PrivateRoute allowedRoles={["PLANEJADOR"]} />}>
+          <Route element={<PrivateRoute allowedRoles={["planejador"]} />}>
             <Route path="/planejador" element={<PainelPlanejador />} />
           </Route>
 
-          <Route element={<PrivateRoute allowedRoles={["INSPETOR"]} />}>
+          <Route element={<PrivateRoute allowedRoles={["engenheiro"]} />}>
             <Route path="/inspetor" element={<PainelInspetor />} />
           </Route>
 
-          <Route element={<PrivateRoute allowedRoles={["PLANEJADOR"]} />}>
+          <Route element={<PrivateRoute allowedRoles={["planejador"]} />}>
             <Route path="/planejador/agenda" element={<AgendaPlanejadorPage />} />
+          </Route>
+
+          <Route element={<PrivateRoute allowedRoles={['master']} />}>
+            <Route path="/administrador" element={<AdministracaoPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

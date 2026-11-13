@@ -23,12 +23,16 @@ export default function LoginForm() {
   }
 
   // 2. Se já estiver logado, redireciona declarativamente no JSX
-  if (profile?.role === "PLANEJADOR") {
+  if (profile?.perfil_codigo === "planejador") {
     return <Navigate to="/planejador" replace />;
   }
 
-  if (profile?.role === "INSPETOR") {
+  if (profile?.perfil_codigo === "engenheiro") {
     return <Navigate to="/inspetor" replace />;
+  }
+
+  if (profile?.perfil_codigo === "master") {
+    return <Navigate to="/administrador" replace />;
   }
 
   const handleSignIn = async (e: React.SubmitEvent) => {
