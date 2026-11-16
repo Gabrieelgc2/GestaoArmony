@@ -240,7 +240,7 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
                     placeholder="Pesquisar por nome"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-[#0052cc]"
+                    className="w-full pl-10 pr-4 py-2.5  border border-slate-200 rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-[#0052cc]"
                   />
                 </div>
                 {empresasDisponiveis.length > 0 ? (
