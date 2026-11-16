@@ -1,4 +1,5 @@
 export type AdminTab = 'empresas' | 'usuarios'
+export type PerfilUsuario = 'master' | 'planejador' | 'engenheiro';
 
 export interface UsuarioEmpresaVinculo {
     criado_em: string;
@@ -34,8 +35,6 @@ export interface UsuarioAssociado extends UsuarioElegivel {
     associado_em: string;
 }
 
-export type PerfilUsuario = 'master' | 'planejador' | 'engenheiro';
-
 export interface NovoUsuarioInput {
     nome: string;
     email: string;
@@ -49,6 +48,7 @@ export interface NovoUsuarioInput {
 export interface EditarUsuarioInput {
     id: string;
     nome: string;
+    telefone: string | null;
     email: string;
     ativo: boolean;
     perfis: PerfilUsuario[] | null;

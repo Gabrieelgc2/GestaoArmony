@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, LoaderCircle, X } from 'lucide-react';
+import { CheckCircle2, LoaderCircle, Search, X } from 'lucide-react';
 import type {
   EditarUsuarioInput,
   Empresa_Usuario,
@@ -33,7 +33,9 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
   onSave,
 }) => {
   const [nome, setNome] = useState(usuario.nome);
+  const [searchTerm, setSearchTerm] = useState('')
   const [email, setEmail] = useState(usuario.email);
+  const [telefone, setTelefone] = useState(usuario.telefone ?? '')
   const [situacao, setSituacao] = useState<'ativo' | 'inativo'>(usuario.ativo ? 'ativo' : 'inativo');
   const [perfis, setPerfis] = useState<PerfilUsuario[]>(() => usuario.perfis.filter(isPerfilUsuario));
   const [empresasSelecionadas, setEmpresasSelecionadas] = useState<number[]>(() =>
@@ -43,6 +45,11 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
       )
       .map((empresa) => empresa.codigo_hetmo),
   );
+  const filteredEmpresas = empresas.filter((u) => {
+    const matchesSearch =
+      u.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesSearch
+  });
   const [salvando, setSalvando] = useState(false);
   const [salvo, setSalvo] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -86,6 +93,7 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
         email: email.trim().toLowerCase(),
         ativo: situacao === 'ativo',
         perfis,
+        telefone: telefone.trim(),
         empresas: empresasSelecionadas,
       });
       setSalvo(true);
@@ -96,7 +104,7 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
     }
   };
 
-  const empresasDisponiveis = empresas.filter((empresa) =>
+  const empresasDisponiveis = filteredEmpresas.filter((empresa) =>
     empresa.ativa || empresasSelecionadas.includes(empresa.codigo_hetmo),
   );
 
@@ -146,11 +154,10 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
             <form onSubmit={handleSubmit} className="px-7 py-5 space-y-5 max-h-[calc(90vh-90px)] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label className="block text-sm font-semibold text-slate-700">
-                  Nome <span className="text-rose-600">*</span>
+                  Nome
                   <input
                     value={nome}
                     onChange={(event) => setNome(event.target.value)}
-                    required
                     disabled={salvando}
                     autoComplete="name"
                     className="mt-1.5 w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-normal focus:outline-hidden focus:ring-2 focus:ring-[#0052cc]"
@@ -158,36 +165,46 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
                 </label>
 
                 <label className="block text-sm font-semibold text-slate-700">
-                  E-mail <span className="text-rose-600">*</span>
+                  E-mail
                   <input
                     type="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    required
                     disabled={salvando}
                     autoComplete="email"
                     className="mt-1.5 w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-normal focus:outline-hidden focus:ring-2 focus:ring-[#0052cc]"
                   />
                 </label>
 
-                <label className="block text-sm font-semibold text-slate-700 md:col-span-2">
-                  Situação <span className="text-rose-600">*</span>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Situação
                   <select
                     value={situacao}
                     onChange={(event) => setSituacao(event.target.value === 'ativo' ? 'ativo' : 'inativo')}
-                    required
                     disabled={salvando}
                     className="mt-1.5 w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-normal focus:outline-hidden focus:ring-2 focus:ring-[#0052cc]"
                   >
                     <option value="ativo">Ativo</option>
                     <option value="inativo">Inativo</option>
                   </select>
+
+                </label>
+
+                <label className="block text-sm font-semibold text-slate-700">
+                  Telefone
+                  <input
+                    value={telefone}
+                    onChange={(event) => setTelefone(event.target.value)}
+                    disabled={salvando}
+                    autoComplete="telefone"
+                    className="mt-1.5 w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-normal focus:outline-hidden focus:ring-2 focus:ring-[#0052cc]"
+                  />
                 </label>
               </div>
 
               <fieldset>
                 <legend className="text-sm font-bold text-slate-800">
-                  Perfis <span className="text-rose-600">*</span>
+                  Perfis
                 </legend>
                 <p className="text-xs text-slate-500 mt-1 mb-3">
                   Master é exclusivo; Planejador e Engenheiro podem ser combinados.
@@ -216,6 +233,16 @@ export const ModalEditarUsuario: React.FC<ModalEditarUsuarioProps> = ({
                 <p className="text-xs text-slate-500 mt-1 mb-3">
                   Empresas inativas já associadas também são exibidas para preservar os vínculos.
                 </p>
+                <div className="relative w-72 mb-3">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Pesquisar por nome"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-[#0052cc]"
+                  />
+                </div>
                 {empresasDisponiveis.length > 0 ? (
                   <div className="max-h-48 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100">
                     {empresasDisponiveis.map((empresa) => (

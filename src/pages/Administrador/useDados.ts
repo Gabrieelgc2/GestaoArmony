@@ -175,6 +175,7 @@ export async function editarUsuario(input: EditarUsuarioInput): Promise<Resultad
         p_id: input.id,
         p_nome: input.nome.trim(),
         p_email: input.email.trim().toLowerCase(),
+        p_telefone: input.telefone?.trim(),
         p_ativo: input.ativo,
         p_perfis: input.perfis,
         p_empresas: input.empresas,

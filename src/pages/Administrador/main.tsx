@@ -130,7 +130,6 @@ export const AdministracaoPage: React.FC = () => {
             onSave={handleEditarUsuario}
           />
         )}
-
       </div>
     </div>
   );
