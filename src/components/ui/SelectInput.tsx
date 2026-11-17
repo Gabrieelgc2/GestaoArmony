@@ -7,6 +7,7 @@ interface Option {
 }
 
 interface SelectProps {
+  id?: string;
   placeholder: string;
   options: Option[];
   value: string;
@@ -16,6 +17,7 @@ interface SelectProps {
 }
 
 export default function Select({
+  id,
   placeholder,
   options,
   value,
@@ -33,6 +35,7 @@ export default function Select({
       )}
 
       <select
+        id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={`

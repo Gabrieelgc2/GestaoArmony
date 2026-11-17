@@ -1,19 +1,35 @@
 import Input from "../ui/Input/Input";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
-import { UserAuth } from "@/contexts/AuthContext";
-import { Link, Navigate } from "react-router-dom";
+import { useState, type FormEvent } from "react";
+import {
+  UserAuth,
+} from "@/contexts/AuthContext";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import ButtonConfirm from "../ui/Button/ButtonConfirm";
+import Select from "../ui/SelectInput";
+import {
+  isUserRole,
+  roleHomeRoutes,
+  roleLabels,
+} from "@/utils/userRoles";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(false);
-  const { signInUser, profile, loading } = UserAuth();
+  const {
+    signInUser,
+    session,
+    profile,
+    activeRole,
+    setActiveRole,
+    loading,
+    signOut,
+  } = UserAuth();
 
-// 1. Enquanto carrega a sessão/perfil, mostra o spinner
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -22,43 +38,96 @@ export default function LoginForm() {
     );
   }
 
-  // 2. Se já estiver logado, redireciona declarativamente no JSX
-  if (profile?.perfil_codigo === "planejador") {
-    return <Navigate to="/planejador" replace />;
+  if (session && profile?.length === 1 && activeRole) {
+    return <Navigate to={roleHomeRoutes[activeRole]} replace />;
   }
 
-  if (profile?.perfil_codigo === "engenheiro") {
-    return <Navigate to="/inspetor" replace />;
-  }
-
-  if (profile?.perfil_codigo === "master") {
-    return <Navigate to="/administrador" replace />;
-  }
-
-  const handleSignIn = async (e: React.SubmitEvent) => {
+  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCarregando(true);
-    setErrorMessage(null); // Limpa erros anteriores
+    setErrorMessage(null);
 
-    // 1. Chama o signInUser usando a estrutura { success, error }
     const result = await signInUser(email, password);
-
-    // 2. Verifica o resultado
     if (!result.success) {
       setErrorMessage("Erro ao realizar login.");
-      // Limpa a mensagem após 3 segundos
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 3000);
-      setCarregando(false);
+      setTimeout(() => setErrorMessage(null), 3000);
+    }
+    setCarregando(false);
+  };
+
+  const handleSelectRole = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!activeRole || !profile?.some((item) => item.perfil_codigo === activeRole)) {
+      setErrorMessage("Selecione um perfil associado à sua conta.");
       return;
-    } 
-  }
-    if (loading) {
+    }
+    navigate(roleHomeRoutes[activeRole], { replace: true });
+  };
+
+  if (session && profile?.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
+      <div className="space-y-4 text-center">
+        <p className="text-sm text-red-700">
+          Sua conta não possui um perfil de acesso cadastrado.
+        </p>
+        <ButtonConfirm type="button" onClick={() => void signOut()}>
+          Sair
+        </ButtonConfirm>
       </div>
+    );
+  }
+
+  if (session && profile === null) {
+    return (
+      <div className="space-y-4 text-center">
+        <p className="text-sm text-red-700">
+          Não foi possível carregar os perfis da sua conta.
+        </p>
+        <ButtonConfirm type="button" onClick={() => void signOut()}>
+          Sair
+        </ButtonConfirm>
+      </div>
+    );
+  }
+
+  if (session && profile && profile.length > 1) {
+    const availableRoles = profile.map((item) => item.perfil_codigo);
+    return (
+      <form onSubmit={handleSelectRole} className="space-y-6">
+        <label htmlFor="login-role" className="block text-sm font-medium text-slate-700">
+          Entrar como
+        </label>
+        <Select
+          id="login-role"
+          placeholder="Selecione um perfil"
+          options={availableRoles.map((role) => ({
+            value: role,
+            label: roleLabels[role],
+          }))}
+          value={activeRole ?? ""}
+          onChange={(value) => {
+            if (isUserRole(value) && availableRoles.includes(value)) {
+              setActiveRole(value);
+            }
+            setErrorMessage(null);
+          }}
+        />
+        {errorMessage && (
+          <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg border border-red-200">
+            {errorMessage}
+          </div>
+        )}
+        <ButtonConfirm type="submit" disabled={!activeRole}>
+          Continuar →
+        </ButtonConfirm>
+        <button
+          type="button"
+          onClick={() => void signOut()}
+          className="w-full text-sm text-blue-800 hover:underline"
+        >
+          Sair
+        </button>
+      </form>
     );
   }
 

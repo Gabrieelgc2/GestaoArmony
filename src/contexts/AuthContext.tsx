@@ -1,7 +1,15 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../supabaseClient";
-
-export type UserRole = 'engenheiro' | 'master' | 'planejador';
+import type { UserRole } from "@/utils/userRoles";
+export type { UserRole } from "@/utils/userRoles";
 
 export interface UserProfile {
   usuario_id: string;
@@ -9,14 +17,16 @@ export interface UserProfile {
 }
 
 interface AuthContextType {
-  session: any;
-  profile: UserProfile | null;
+  session: Session | null;
+  profile: UserProfile[] | null;
+  activeRole: UserRole | null;
+  setActiveRole: (role: UserRole | null) => void;
   loading: boolean;
-  LoadRole: (userId: string) => Promise<void>
+  LoadRole: (userId: string) => Promise<void>;
   signInUser: (
     email: string,
     password: string
-  ) => Promise<{ success: boolean; data?: any; error?: string }>;
+  ) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
 }
 
@@ -27,25 +37,46 @@ interface AuthContextProviderProps {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [session, setSession] = useState<any>(undefined);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<UserProfile[] | null>(null);
+  const [activeRole, setActiveRoleState] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // LoadRole
-  const LoadRole = async (userId: string) => {
+  const setActiveRole = useCallback((role: UserRole | null) => {
+    setActiveRoleState(role);
+  }, []);
+
+  const LoadRole = useCallback(async (userId: string) => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("usuario_perfil")
         .select("usuario_id, perfil_codigo")
-        .eq("usuario_id", userId)
-        .single()
-      console.log("Perfil vindo do banco:", data);
-      console.log("Role real:", data?.perfil_codigo);
-      setProfile(data || null);
-    } catch {
+        .eq("usuario_id", userId);
+      if (error) {
+        throw error;
+      }
+
+      const roles = (data || []).filter(
+        (item): item is UserProfile =>
+          item.perfil_codigo === "planejador" ||
+          item.perfil_codigo === "engenheiro" ||
+          item.perfil_codigo === "master"
+      );
+      setProfile(roles);
+
+      setActiveRoleState((currentRole) => {
+        if (roles.some((item) => item.perfil_codigo === currentRole)) {
+          return currentRole;
+        }
+        return roles.length === 1 ? roles[0].perfil_codigo : null;
+      });
+    } catch (error) {
+      console.error("Erro ao carregar perfis do usuário:", error);
       setProfile(null);
+      setActiveRole(null);
     }
-  };
+  }, [setActiveRole]);
+
   // Sign in
   const signInUser = async (email: string, password: string) => {
     try {
@@ -59,10 +90,15 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         return { success: false, error: error.message };
       }
 
-      console.log("Sign-in success:", data);
-      return { success: true, data };
-    } catch (error: any) {
-      console.error("Unexpected error during sign-in:", error?.message);
+      if (data.user) {
+        await LoadRole(data.user.id);
+      }
+      return { success: true };
+    } catch (error: unknown) {
+      console.error(
+        "Unexpected error during sign-in:",
+        error instanceof Error ? error.message : error
+      );
       return {
         success: false,
         error: "An unexpected error occurred. Please try again.",
@@ -79,6 +115,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
         if (session?.user) {
           await LoadRole(session.user.id);
+        } else {
+          setProfile(null);
+          setActiveRole(null);
         }
       } catch (err) {
         console.error("Erro na checagem inicial:", err);
@@ -97,6 +136,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
           await LoadRole(session.user.id);
         } else {
           setProfile(null);
+          setActiveRole(null);
         }
       }
     );
@@ -105,7 +145,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []); // Fecha o useEffect aqui no final!
+  }, [LoadRole, setActiveRole]);
 
   // Sign out
   async function signOut() {
@@ -115,11 +155,21 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
     setSession(null);
     setProfile(null);
+    setActiveRole(null);
   }
 
   return (
     <AuthContext.Provider
-      value={{ signInUser, session, signOut, profile, loading, LoadRole }}
+      value={{
+        signInUser,
+        session,
+        signOut,
+        profile,
+        activeRole,
+        setActiveRole,
+        loading,
+        LoadRole,
+      }}
     >
       {children}
     </AuthContext.Provider>

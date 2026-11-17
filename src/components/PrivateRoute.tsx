@@ -1,18 +1,15 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { UserAuth, type UserRole } from "@/contexts/AuthContext";
+import {
+  UserAuth,
+} from "@/contexts/AuthContext";
+import { roleHomeRoutes, type UserRole } from "@/utils/userRoles";
 
 interface PrivateRouteProps {
   allowedRoles?: UserRole[];
 }
 
-const rotaPorPerfil: Record<UserRole, string> = {
-  planejador: "/planejador",
-  engenheiro: "/inspetor",
-  master: "/administrador",
-};
-
 export default function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
-  const { session, profile, loading } = UserAuth();
+  const { session, profile, activeRole, loading } = UserAuth();
 
   // 1. Enquanto carrega a sessão ou busca o profile no Supabase
   if (loading) {
@@ -29,10 +26,14 @@ export default function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
   }
 
   // 3. Checagem de Cargo: se a rota exige cargos específicos e o usuário não tem o cargo certo
-  if (allowedRoles && profile && !allowedRoles.includes(profile.perfil_codigo)) {
-    // Redireciona o usuário para o painel correto dele
-    const rotaCorreta = rotaPorPerfil[profile.perfil_codigo];
-    return <Navigate to={rotaCorreta} replace />;
+  if (!profile?.length || !activeRole || !profile.some(
+    (item) => item.perfil_codigo === activeRole
+  )) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(activeRole)) {
+    return <Navigate to={roleHomeRoutes[activeRole]} replace />;
   }
 
   // 4. Liberado: renderiza o painel filho
