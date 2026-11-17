@@ -139,7 +139,7 @@ export async function salvarNovoUsuario(input: NovoUsuarioInput): Promise<Result
     if (!usuarioAuth) throw new Error("O Supabase Auth não retornou o usuário criado.");
     if (usuarioAuth.identities?.length === 0) throw new Error("Já existe uma conta com este e-mail.");
 
-    const { data, error } = await supabase.rpc("salvar_usuario", {
+    const { data, error } = await supabase.rpc("criar_usuario", {
         p_id: usuarioAuth.id,
         p_nome: input.nome.trim(),
         p_email: email,
@@ -161,7 +161,7 @@ export async function salvarNovoUsuario(input: NovoUsuarioInput): Promise<Result
         );
     }
     if (data !== "criado" && data !== "atualizado") {
-        throw new Error(`O RPC salvar_usuario retornou um resultado inesperado: ${String(data)}.`);
+        throw new Error(`O RPC criar_usuario retornou um resultado inesperado: ${String(data)}.`);
     }
     return data;
 }
