@@ -64,32 +64,6 @@ export default function LoginForm() {
     navigate(roleHomeRoutes[activeRole], { replace: true });
   };
 
-  if (session && profile?.length === 0) {
-    return (
-      <div className="space-y-4 text-center">
-        <p className="text-sm text-red-700">
-          Sua conta não possui um perfil de acesso cadastrado.
-        </p>
-        <ButtonConfirm type="button" onClick={() => void signOut()}>
-          Sair
-        </ButtonConfirm>
-      </div>
-    );
-  }
-
-  if (session && profile === null) {
-    return (
-      <div className="space-y-4 text-center">
-        <p className="text-sm text-red-700">
-          Não foi possível carregar os perfis da sua conta.
-        </p>
-        <ButtonConfirm type="button" onClick={() => void signOut()}>
-          Sair
-        </ButtonConfirm>
-      </div>
-    );
-  }
-
   if (session && profile && profile.length > 1) {
     const availableRoles = profile.map((item) => item.perfil_codigo);
     return (
