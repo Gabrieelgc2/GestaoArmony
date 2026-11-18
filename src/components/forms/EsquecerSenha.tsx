@@ -4,7 +4,7 @@ import Card from "@/components/ui/Card/Card";
 
 export default function EsquecerSenha() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
+    <main className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-slate-900">Gestão Armony</h1>
