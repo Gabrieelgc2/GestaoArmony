@@ -24,7 +24,7 @@
   left: 0;
   width: 1px;
   background: currentColor;
-  animation: caret 1.8s steps(13, end) forwards, blink 1s step-end 3;
+  animation: caret 1.8s steps(13, end) forwards
 }
 
 @keyframes typing {
@@ -40,12 +40,6 @@
   }
   to {
     left: 100%;
-    opacity: 0;
-  }
-}
-
-@keyframes blink {
-  50% {
     opacity: 0;
   }
 }
