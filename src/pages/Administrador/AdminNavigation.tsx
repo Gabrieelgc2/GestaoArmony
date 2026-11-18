@@ -24,7 +24,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         { id: 'usuarios' as AdminTab, label: 'Usuários', icon: Users, count: usuariosCount },
     ];
     return (
-        <nav className="bg-white rounded-2xl shadow-sm border border-slate-100 p-2 mb-8 flex flex-col items-center justify-between md:flex-row">
+        <nav className="bg-white rounded-2xl shadow-sm border border-slate-100 p-2 mb-8 flex flex-col items-center md:flex-row justify-between">
             <div className="flex items-center justify-between">
                 {tabs.map((tab) => {
                     const Icon = tab.icon;
