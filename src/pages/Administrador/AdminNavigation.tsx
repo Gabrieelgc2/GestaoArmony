@@ -24,7 +24,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         { id: 'usuarios' as AdminTab, label: 'Usuários', icon: Users, count: usuariosCount },
     ];
     return (
-        <nav className="bg-white rounded-2xl shadow-sm border border-slate-100 p-2 mb-8 flex items-center justify-between">
+        <nav className="bg-white rounded-2xl shadow-sm border border-slate-100 p-2 mb-8 flex flex-col items-center justify-between md:flex-row">
             <div className="flex items-center justify-between">
                 {tabs.map((tab) => {
                     const Icon = tab.icon;
@@ -33,7 +33,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                         <button
                             key={tab.id}
                             onClick={() => onTabChange(tab.id)}
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all text-sm transition-all duration-150 ${isActive
+                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-150 ${isActive
                                     ? 'bg-blue-50 text-[#0052cc]' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
                         >
                             <Icon className={`w-4 h-4 ${isActive ? 'text-[#0052cc]' : 'text-slate-400'}`} />

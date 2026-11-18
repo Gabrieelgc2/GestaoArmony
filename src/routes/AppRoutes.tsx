@@ -28,7 +28,7 @@ export function AppRoutes() {
             <Route path="/planejador/agenda" element={<AgendaPlanejadorPage />} />
           </Route>
 
-          <Route element={<PrivateRoute allowedRoles={['master']} />}>
+          <Route element={<PrivateRoute allowedRoles={["master"]} />}>
             <Route path="/administrador" element={<AdministracaoPage />} />
           </Route>
 

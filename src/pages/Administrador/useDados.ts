@@ -190,6 +190,7 @@ export async function editarUsuario(input: EditarUsuarioInput): Promise<Resultad
     if (data !== "atualizado") {
         throw new Error(`O RPC editar_usuario retornou um resultado inesperado: ${String(data)}.`);
     }
+    console.log("Teste:", error)
     return data;
 }
 
