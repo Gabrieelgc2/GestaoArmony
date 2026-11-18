@@ -24,7 +24,7 @@
   left: 0;
   width: 1px;
   background: currentColor;
-  animation: caret 1.8s steps(13, end) forwards, blink 1s step-end infinite;
+  animation: caret 1.8s steps(13, end) forwards, blink 1s step-end 3;
 }
 
 @keyframes typing {
@@ -34,8 +34,13 @@
 }
 
 @keyframes caret {
+  from{
+    left: 0;
+    opacity: 1;
+  }
   to {
     left: 100%;
+    opacity: 0;
   }
 }
 
