@@ -89,8 +89,8 @@ export default function PainelPlanejador() {
             return nomeMatch || pedidoMatch;
           });
           return (
-            <section key={coluna.key} className="flex flex-col w-80 shrink-0 bg-gray-50/70 border border-gray-200/80 rounded-2xl overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200/80">
+            <section key={coluna.key} className="flex flex-col w-80 shrink-0 bg-gray-400 border border-gray-200/80 rounded-2xl overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 bg-white/50 border-b border-gray-200/80">
                 <span className="text-xs font-bold text-gray-800 tracking-wide uppercase">{coluna.label}</span>
                 <span className="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
                 {projetosDaFase.length}
@@ -98,7 +98,7 @@ export default function PainelPlanejador() {
               </div>
               <div className="flex-1 p-3 space-y-3 overflow-y-auto">
                 {projetosDaFase.length === 0 ? (
-                  <div className="h-32 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-xl text-[11px] text-gray-400 font-medium">
+                  <div className="h-32 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-xl text-[11px] text-gray-600 font-medium">
                     {termoLimpo ? "Nenhum projeto encontrado" : "Nenhum projeto nesta fase"}
                   </div>
                 ) : (

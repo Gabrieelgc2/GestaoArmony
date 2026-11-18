@@ -8,7 +8,7 @@ export default function AdminHeader() {
         </h1>
         <div className="flex items-center gap-1.5 mt-1 text-sm font-medium text-slate-500">
         <Smile className="w-4 h-4 text-slate-500" />
-        <span>Bem-vindo, Administrador</span>
+        <span className='text-slate-500'>Bem-vindo, Administrador</span>
         </div>
         </header>
     );

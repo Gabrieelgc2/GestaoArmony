@@ -59,7 +59,7 @@ export const AdministracaoPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] text-slate-900 px-6 py-8 md:px-12 md:py-10">
+    <div className="min-h-screen animated text-slate-900 px-6 py-8 md:px-12 md:py-10">
       <div className="max-w-7xl mx-auto">
         {/* Cabeçalho Fixo */}
         <AdminHeader/>

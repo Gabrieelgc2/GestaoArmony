@@ -191,10 +191,10 @@ export function CalendarioPlanejador({ hook }: { hook: any }) {
                 {/* Lista de vistorias do dia clicado */}
                 <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wide">
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wide">
                             Obras de {diaSelecionado.split("-").reverse().join("/")}
                         </h3>
-                        <span className="text-xs text-gray-500 font-medium">
+                        <span className="text-xs text-slate-400 font-medium">
                         {inspecoesDoDia.length} {inspecoesDoDia.length === 1 ? "item" : "itens"}
                         </span>
                     </div>

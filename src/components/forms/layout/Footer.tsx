@@ -6,7 +6,7 @@ export default function Footer() {
         justify-center
         gap-4
         text-xs
-        text-gray-500
+        text-black
       "
     >
       <a href="#">Políticas de privacidade</a>

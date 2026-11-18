@@ -143,10 +143,10 @@ export function CalendarioInspetor({ inspecoes, hook }: { inspecoes: any[]; hook
       {/* Lista das vistorias do dia clicado */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wide">
+          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wide">
             Vistorias de {diaSelecionado.split("-").reverse().join("/")}
           </h3>
-          <span className="text-xs text-gray-500 font-medium">
+          <span className="text-xs text-slate-300 font-medium">
             {inspecoesDoDia.length} {inspecoesDoDia.length === 1 ? "item" : "itens"}
           </span>
         </div>

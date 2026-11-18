@@ -4,7 +4,7 @@ import LoginForm from "./LoginForm";
 
 export default function Login() {
   return (
-    <main className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+    <main className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
          <div className="text-center">
@@ -14,11 +14,11 @@ export default function Login() {
             className="mx-auto h-16"
           />  */}
 
-          <h1 className="mt-6 text-3xl font-bold text-slate-900">
+          <h1 className="mt-6 text-3xl font-bold text-[rgb(0, 0, 120)]">
             Gestão Armony
           </h1>
 
-          <p className="mt-2 text-slate-500">
+          <p className="mt-2 text-black">
             Obras, medição e instalação
           </p>
         </div>
