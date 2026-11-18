@@ -4,4 +4,44 @@
     min-height: 100vh;
     background: linear-gradient(-190deg, #f8fafc 0% 40%, #09297f 40% 66%,  rgb(193, 11, 11) 66% 100%);
   }
+.typewriter {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.typewriter span {
+  display: block;
+  clip-path: inset(-0.08em 100% -0.08em 0);
+  animation: typing 1.8s steps(13, end) forwards;
+}
+
+.typewriter::after {
+  content: "";
+  position: absolute;
+  top: 0.1em;
+  bottom: 0.1em;
+  left: 0;
+  width: 1px;
+  background: currentColor;
+  animation: caret 1.8s steps(13, end) forwards, blink 1s step-end infinite;
+}
+
+@keyframes typing {
+  to {
+    clip-path: inset(-0.08em 0 -0.08em 0);
+  }
+}
+
+@keyframes caret {
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
 }
