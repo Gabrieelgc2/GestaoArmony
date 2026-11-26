@@ -12,6 +12,8 @@ function App() {
       </AuthContextProvider>
       <PwaInstallPrompt />
     </>
+    /*
+    */ 
   );
 }
 
