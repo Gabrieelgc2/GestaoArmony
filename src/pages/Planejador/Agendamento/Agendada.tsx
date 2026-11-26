@@ -1,15 +1,15 @@
 import { AlertCircle, Calendar, CheckCircle2, UserCheck } from "lucide-react";
-import type { Inspecao } from "@/utils/painelPlanejadorConfig";
+import type { Inspecao, Profile } from "@/utils/painelPlanejadorConfig";
 import { formatarDataHora } from "@/utils/DataConfig";
 import { obterNomeInspetor } from "../../../utils/projeto.utils";
 
 type AgendadaProps = {
   inspecao: Inspecao;
+  inspetores: Profile[];
 };
 
-export function Agendada({ inspecao }: AgendadaProps) {
-  const nomeInspetor = obterNomeInspetor(inspecao.profiles);
-
+export function Agendada({ inspecao, inspetores }: AgendadaProps) {
+  const nomeInspetor = obterNomeInspetor(inspecao.inspetor_id, inspetores);
   return (
     <div className="bg-gray-50 rounded-lg p-2.5 space-y-1.5 text-[11px] border border-gray-100">
       <div className="flex items-center gap-1.5 font-medium text-gray-700">

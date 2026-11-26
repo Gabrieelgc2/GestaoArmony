@@ -1,11 +1,10 @@
 import { supabase } from "@/supabaseClient";
-import type { FaseKey, NovoProjetoForm, Profile, Projeto } from "@/utils/painelPlanejadorConfig";
+import type { FaseKey, Profile, Projeto, UsuarioPerfis } from "@/utils/painelPlanejadorConfig";
 import { horariosConflitam, isInspecaoAtiva } from "@/utils/agendaUtils";
 
 const projetoSelect = `
-  id,
-  name_project,
-  order_number,
+  hetmo,
+  numero,
   installation_location,
   prazo_acordado_dias,
   contato_client,
@@ -22,10 +21,21 @@ const projetoSelect = `
     justificativa,
     status_aprovacao,
     concluido,
-    inspetor_id,
-    profiles:inspetor_id (full_name)
+    inspetor_id
+  ),
+  clients(
+  nome
   )
 `;
+
+const UsuariosBanco = `
+id,
+nome,
+usuario_perfil(
+usuario_id,
+perfil_codigo
+)
+`
 
 export async function carregarDadosPlanejador(): Promise<{
   nome: string;
@@ -38,46 +48,58 @@ export async function carregarDadosPlanejador(): Promise<{
 
   let nome = "Planejador";
   if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("full_name")
+  const { data: profile } = await supabase
+      .from("usuarios")
+      .select("nome")
       .eq("id", user.id)
       .single();
-    nome = profile?.full_name || nome;
+    nome = profile?.nome || nome;
   }
 
-  const { data: listaInspetores } = await supabase
-    .from("profiles")
-    .select("id, full_name")
-    .eq("role", "INSPETOR");
+  const { data: Users, error: error } = await supabase
+    .from("usuarios")
+    .select(UsuariosBanco)
 
-  const { data: listaProjetos } = await supabase
+  const AllUsers = (Users ?? []) as unknown as UsuarioPerfis[];
+  console.log("Usuários retornados: ", AllUsers)
+  const nomeEngenheiros: Profile[] = AllUsers
+  .filter((usuario) =>
+    usuario.usuario_perfil.some(
+      (perfil) => perfil.perfil_codigo === "engenheiro"
+    )
+  )
+  .map(({ id, nome }) => ({ id, nome }));
+
+  console.log("Quantidade de engenheiros:", nomeEngenheiros.length);
+  console.log("Erro de usuário: ", error)
+  console.log("Nome Engenheiros: ", nomeEngenheiros)
+
+  const { data: listaProjetos, error: errors } = await supabase
     .from("projects")
     .select(projetoSelect)
     .order("created_at", { ascending: false });
+    console.log("Erro ao selecionar Projetos:", errors)
 
   return {
     nome,
-    inspetores: listaInspetores || [],
+    inspetores: nomeEngenheiros || [],
     projetos: (listaProjetos || []) as unknown as Projeto[],
   };
 }
 
-export async function criarProjeto(projeto: NovoProjetoForm) {
-  return supabase.from("projects").insert([
-    {
-      name_project: projeto.name_project.trim(),
-      prazo_acordado_dias: Number(projeto.prazo_acordado_dias),
-      order_number: projeto.order_number.trim(),
-      installation_location: projeto.installation_location.trim(),
-      contato_client: projeto.contato_client.trim(),
-      status: "NOVO",
-    },
-  ]);
+export async function atualizarStatusProjeto(projetoHetmo: string, status: FaseKey) {
+  return supabase.from("projects").update({ status }).eq("hetmo", projetoHetmo);
 }
 
-export async function atualizarStatusProjeto(projetoId: string, status: FaseKey) {
-  return supabase.from("projects").update({ status }).eq("id", projetoId);
+export async function atualizarDadosEStatusProjeto(
+  projetoHetmo: string,
+  status: FaseKey,
+  dados: Pick<Projeto, "installation_location" | "prazo_acordado_dias">,
+) {
+  return supabase
+    .from("projects")
+    .update({ ...dados, status })
+    .eq("hetmo", projetoHetmo);
 }
 
 export async function verificarDisponibilidadeInspetor({
@@ -96,7 +118,7 @@ export async function verificarDisponibilidadeInspetor({
     throw new Error("A data ou o horário do agendamento é inválido.");
   }
 
-  const margemConflitoMs = 2 * 60 * 60 * 1000;
+  const margemConflitoMs = 2 * 60 * 60 * 1000; // 2 horas em milissegundos
   const inicioBusca = new Date(dataHoraAgendada.getTime() - margemConflitoMs);
   const fimBusca = new Date(dataHoraAgendada.getTime() + margemConflitoMs);
 
@@ -122,13 +144,13 @@ export async function verificarDisponibilidadeInspetor({
 }
 
 export async function salvarAgendamentoInspecao({
-  projetoId,
+  projetoHetmo,
   fase,
   inspecaoId,
   inspetorId,
   dataHora,
 }: {
-  projetoId: string;
+  projetoHetmo: string;
   fase: FaseKey;
   inspecaoId?: string;
   inspetorId?: string;
@@ -149,7 +171,7 @@ export async function salvarAgendamentoInspecao({
 
   return supabase.from("inspections").insert([
     {
-      project_id: projetoId,
+      hetmo: projetoHetmo,
       inspetor_id: inspetorId,
       fase,
       data_prevista: dataHora,

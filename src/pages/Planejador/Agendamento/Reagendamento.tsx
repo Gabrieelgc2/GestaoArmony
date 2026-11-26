@@ -10,13 +10,13 @@ type ReagendamentoProps = {
 
 export function Reagendamento({ projeto, inspecao, actions }: ReagendamentoProps) {
   const faseAtual = projeto.status as FaseKey;
-  const dataSelecionada = actions.datasPrevistas[projeto.id];
-  const horarioSelecionado = actions.horariosPrevistos[projeto.id];
+  const dataSelecionada = actions.datasPrevistas[projeto.hetmo];
+  const horarioSelecionado = actions.horariosPrevistos[projeto.hetmo];
   const inspetorIndisponivel = Boolean(
     inspecao.inspetor_id
       && dataSelecionada
       && horarioSelecionado
-      && !actions.verificarDisponibilidadeInspetor(inspecao.inspetor_id, projeto.id, faseAtual),
+      && !actions.verificarDisponibilidadeEngenheiro(inspecao.inspetor_id, projeto.hetmo, faseAtual),
   );
 
   return (
@@ -32,16 +32,16 @@ export function Reagendamento({ projeto, inspecao, actions }: ReagendamentoProps
         <label className="block text-[10px] font-bold uppercase text-gray-700">Definir Nova Data:</label>
         <input
           type="date"
-          value={actions.datasPrevistas[projeto.id] || ""}
-          onChange={(event) => actions.setDatasPrevistas((prev) => ({ ...prev, [projeto.id]: event.target.value }))}
+          value={actions.datasPrevistas[projeto.hetmo] || ""}
+          onChange={(event) => actions.setDatasPrevistas((prev) => ({ ...prev, [projeto.hetmo]: event.target.value }))}
           className="w-full border border-rose-200 rounded p-1 text-[11px] bg-white outline-none focus:ring-1 focus:ring-rose-500"
         />
         <label className="text-[11px] font-semibold text-gray-700">Horário</label>
         <input
           type="time"
           aria-label="Horário do reagendamento"
-          value={actions.horariosPrevistos[projeto.id] || ""}
-          onChange={(event) => actions.setHorariosPrevistos((prev) => ({ ...prev, [projeto.id]: event.target.value }))}
+          value={actions.horariosPrevistos[projeto.hetmo] || ""}
+          onChange={(event) => actions.setHorariosPrevistos((prev) => ({ ...prev, [projeto.hetmo]: event.target.value }))}
           className="border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 outline-none focus:ring-2 focus:ring-gray-900 bg-white"
         />
         {inspetorIndisponivel && (
@@ -51,15 +51,15 @@ export function Reagendamento({ projeto, inspecao, actions }: ReagendamentoProps
         )}
         <button
           disabled={
-            actions.salvandoId === projeto.id
+            actions.salvandoId === projeto.hetmo
             || !dataSelecionada
             || !horarioSelecionado
             || inspetorIndisponivel
           }
-          onClick={() => actions.onAgendarInspecao(projeto.id, faseAtual)}
+          onClick={() => actions.onAgendarInspecao(projeto.hetmo, faseAtual)}
           className="w-full py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] rounded transition disabled:bg-gray-300 cursor-pointer"
         >
-          {actions.salvandoId === projeto.id ? "Reagendando..." : "Reenviar Nova Data"}
+          {actions.salvandoId === projeto.hetmo ? "Reagendando..." : "Reenviar Nova Data"}
         </button>
       </div>
     </div>

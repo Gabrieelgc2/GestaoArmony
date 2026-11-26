@@ -9,14 +9,14 @@ type AgendarProps = {
 
 export function Agendar({ projeto, actions }: AgendarProps) {
   const faseAtual = projeto.status as FaseKey;
-  const dataSelecionada = actions.datasPrevistas[projeto.id];
-  const horarioSelecionado = actions.horariosPrevistos[projeto.id];
-  const inspetorSelecionado = actions.inspetoresSelecionados[projeto.id];
+  const dataSelecionada = actions.datasPrevistas[projeto.hetmo];
+  const horarioSelecionado = actions.horariosPrevistos[projeto.hetmo];
+  const inspetorSelecionado = actions.engenheirosSelecionados[projeto.hetmo];
   const inspetorIndisponivel = Boolean(
     inspetorSelecionado
       && dataSelecionada
       && horarioSelecionado
-      && !actions.verificarDisponibilidadeInspetor(inspetorSelecionado, projeto.id, faseAtual),
+      && !actions.verificarDisponibilidadeEngenheiro(inspetorSelecionado, projeto.hetmo, faseAtual),
   );
 
   return (
@@ -31,8 +31,8 @@ export function Agendar({ projeto, actions }: AgendarProps) {
           <label className="text-[10px] font-semibold text-gray-600 uppercase tracking-tight">Data</label>
           <input
             type="date"
-            value={actions.datasPrevistas[projeto.id] || ""}
-            onChange={(event) => actions.setDatasPrevistas((prev) => ({ ...prev, [projeto.id]: event.target.value }))}
+            value={actions.datasPrevistas[projeto.hetmo] || ""}
+            onChange={(event) => actions.setDatasPrevistas((prev) => ({ ...prev, [projeto.hetmo]: event.target.value }))}
             className="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 outline-none transition shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 cursor-pointer"
           />
         </div>
@@ -42,8 +42,8 @@ export function Agendar({ projeto, actions }: AgendarProps) {
           </label>
           <input
             type="time"
-            value={actions.horariosPrevistos[projeto.id] || ""}
-            onChange={(event) => actions.setHorariosPrevistos((prev) => ({ ...prev, [projeto.id]: event.target.value }))}
+            value={actions.horariosPrevistos[projeto.hetmo] || ""}
+            onChange={(event) => actions.setHorariosPrevistos((prev) => ({ ...prev, [projeto.hetmo]: event.target.value }))}
             className="w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 outline-none transition shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 cursor-pointer"
           />
         </div>
@@ -51,18 +51,18 @@ export function Agendar({ projeto, actions }: AgendarProps) {
 
       <select
         aria-label="Inspetor responsável"
-        value={actions.inspetoresSelecionados[projeto.id] || ""}
-        onChange={(event) => actions.setInspetoresSelecionados((prev) => ({ ...prev, [projeto.id]: event.target.value }))}
+        value={actions.engenheirosSelecionados[projeto.hetmo] || ""}
+        onChange={(event) => actions.setEngenheirosSelecionados((prev) => ({ ...prev, [projeto.hetmo]: event.target.value }))}
         className="w-full border border-gray-200 rounded p-1 text-[11px] bg-white outline-none focus:ring-1 focus:ring-blue-500"
       >
         <option value="">Selecione o Inspetor...</option>
         {actions.inspetores.map((inspetor) => {
           const disponivel = !dataSelecionada || !horarioSelecionado
-            || actions.verificarDisponibilidadeInspetor(inspetor.id, projeto.id, faseAtual);
+            || actions.verificarDisponibilidadeEngenheiro(inspetor.id, projeto.hetmo, faseAtual);
         
           return (
             <option key={inspetor.id} value={inspetor.id} disabled={!disponivel}>
-              {inspetor.full_name}{!disponivel ? " — Indisponível (intervalo mínimo de 2h)" : ""}
+              {inspetor.nome}{!disponivel ? " — Indisponível (intervalo mínimo de 2h)" : ""}
             </option>
           );
         })}
@@ -73,11 +73,11 @@ export function Agendar({ projeto, actions }: AgendarProps) {
         </p>
       )}
       <button
-        disabled={actions.salvandoId === projeto.id || inspetorIndisponivel}
-        onClick={() => actions.onAgendarInspecao(projeto.id, faseAtual)}
+        disabled={actions.salvandoId === projeto.hetmo || inspetorIndisponivel}
+        onClick={() => actions.onAgendarInspecao(projeto.hetmo, faseAtual)}
         className="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[11px] rounded transition disabled:bg-gray-300 cursor-pointer"
       >
-        {actions.salvandoId === projeto.id ? "Salvando..." : "Confirmar Vistoria"}
+        {actions.salvandoId === projeto.hetmo ? "Salvando..." : "Confirmar Vistoria"}
       </button>
     </div>
   );

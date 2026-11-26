@@ -1,11 +1,11 @@
-import type { Inspecao, Projeto } from "@/utils/painelPlanejadorConfig";
+import type { Inspecao, Profile, Projeto } from "@/utils/painelPlanejadorConfig";
 
 export function obterInspecaoAtual(projeto: Projeto): Inspecao | undefined {
   if (projeto.status === "NOVO") {
     return undefined;
   }
   return projeto.inspections?.find(
-    (inspecao) => inspecao.fase === projeto.status,
+  (inspecao) => inspecao.fase === projeto.status,
   );
 }
 
@@ -23,16 +23,13 @@ export function projetoPodeAvancar(
   if (projeto.status === "PRODUCAO") {
     return false;
   }
-
   return Boolean(inspecao?.concluido);
 }
 
 export function obterNomeInspetor(
-  profiles: Inspecao["profiles"],
+  inspetorId: string | null,
+  inspetores: Profile[],
 ): string {
-  if (Array.isArray(profiles)) {
-    return profiles[0]?.full_name || "Engenheiro escalado";
-  }
-
-  return profiles?.full_name || "Engenheiro escalado";
+  return inspetores.find((inspetor) => inspetor.id === inspetorId)?.nome
+    || "Engenheiro escalado";
 }

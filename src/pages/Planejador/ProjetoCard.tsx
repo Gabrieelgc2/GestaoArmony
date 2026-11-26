@@ -18,7 +18,7 @@ export function ProjetoCard({ projeto, actions }: { projeto: Projeto; actions: P
       <BotaoAvancarFase
         projeto={projeto}
         inspecaoAtual={inspecaoAtual}
-        salvando={actions.salvandoId === projeto.id}
+        salvando={actions.salvandoId === projeto.hetmo}
         onAvancar={actions.onAvancarFase}
       />
     </div>

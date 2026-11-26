@@ -1,4 +1,4 @@
-import { Calendar, LogOut, Plus } from "lucide-react";
+import { Calendar, LogOut } from "lucide-react";
 import { ProjetoCard } from "./ProjetoCard";
 import { ModalCadastroProjeto } from "./ModalCadastroProjeto";
 import { FASES_CONFIG } from "../../utils/painelPlanejadorConfig";
@@ -19,12 +19,12 @@ export default function PainelPlanejador() {
     setDatasPrevistas: hook.setDatasPrevistas,
     horariosPrevistos: hook.horariosPrevistos,
     setHorariosPrevistos: hook.setHorariosPrevistos,
-    inspetoresSelecionados: hook.inspetoresSelecionados,
-    setInspetoresSelecionados: hook.setInspetoresSelecionados,
+    engenheirosSelecionados: hook.engenheirosSelecionados,
+    setEngenheirosSelecionados: hook.setEngenheirosSelecionados,
     salvandoId: hook.salvandoId,
     onAgendarInspecao: hook.handleAgendarInspecao,
     onAvancarFase: hook.handleAvancarFase,
-    verificarDisponibilidadeInspetor: hook.verificarDisponibilidadeInspetorLocal,
+    verificarDisponibilidadeEngenheiro: hook.verificarDisponibilidadeEngenheiro,
   };
 
   if (hook.loading) {
@@ -56,12 +56,6 @@ export default function PainelPlanejador() {
             <span>Acessar agenda</span>
           </button>
           <button
-            onClick={() => hook.setModalCriarAberto(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-sm shadow-blue-500/20"
-          >
-            <Plus size={16} /> Cadastrar Nova Obra
-          </button>
-          <button
             onClick={signOut}
             disabled={isLoggingOut}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-gray-50 hover:bg-rose-50 text-gray-700 hover:text-rose-600 active:scale-95 text-xs font-bold rounded-xl border border-gray-200 hover:border-rose-200 transition cursor-pointer disabled:opacity-50"
@@ -84,8 +78,8 @@ export default function PainelPlanejador() {
             const statusMatch = p.status === coluna.key;
             if (!statusMatch) return false;
             if (!termoLimpo) return true;
-            const nomeMatch = p.name_project?.toLowerCase().includes(termoLimpo);
-            const pedidoMatch = String(p.order_number ?? "").toLowerCase().includes(termoLimpo);
+            const nomeMatch = p.nome?.toLowerCase().includes(termoLimpo);
+            const pedidoMatch = String(p.numero ?? "").toLowerCase().includes(termoLimpo);
             return nomeMatch || pedidoMatch;
           });
           return (
@@ -104,7 +98,7 @@ export default function PainelPlanejador() {
                 ) : (
                   projetosDaFase.map((projeto) => (
                     <ProjetoCard
-                      key={projeto.id}
+                      key={projeto.hetmo}
                       projeto={projeto}
                       actions={projetoCardActions}
                     />
@@ -116,7 +110,15 @@ export default function PainelPlanejador() {
         })}
       </main>
 
-      <ModalCadastroProjeto hook={hook} />
+      {hook.projetoParaIniciar && (
+        <ModalCadastroProjeto
+          key={hook.projetoParaIniciar.hetmo}
+          projeto={hook.projetoParaIniciar}
+          salvando={hook.salvandoId === hook.projetoParaIniciar.hetmo}
+          onFechar={hook.fecharModalInicioObra}
+          onConfirmar={hook.handleCompletarDadosEIniciarObra}
+        />
+      )}
     </div>
   );
 }

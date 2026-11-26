@@ -17,7 +17,7 @@ export function BlocoInspecao({ projeto, inspecaoAtual, actions }: BlocoInspecao
       {inspecaoFoiRecusada(inspecaoAtual) ? (
         <Reagendamento projeto={projeto} inspecao={inspecaoAtual!} actions={actions} />
       ) : inspecaoAtual ? (
-        <Agendada inspecao={inspecaoAtual} />
+        <Agendada inspecao={inspecaoAtual} inspetores={actions.inspetores} />
       ) : (
         <Agendar projeto={projeto} actions={actions} />
       )}

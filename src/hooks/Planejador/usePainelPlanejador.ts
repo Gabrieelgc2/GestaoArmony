@@ -1,18 +1,15 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import type { FormEvent } from "react";
 import {
-  DEFAULT_NOVO_PROJETO,
   getProximoStatus,
   type FaseKey,
-  type NovoProjetoForm,
   type Profile,
   type Projeto,
 } from "../../utils/painelPlanejadorConfig";
 import { useAutoAvancoFase } from "./useAutoAvancoFase";
 import {
   atualizarStatusProjeto,
+  atualizarDadosEStatusProjeto,
   carregarDadosPlanejador,
-  criarProjeto,
   salvarAgendamentoInspecao,
   verificarDisponibilidadeInspetor,
 } from "@/services/planejadorService";
@@ -23,17 +20,11 @@ export function usePainelPlanejador() {
   const [projetos, setProjetos] = useState<Projeto[]>([]);
   const [inspetores, setInspetores] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [modalCriarAberto, setModalCriarAberto] = useState(false);
-  const [novoProjeto, setNovoProjeto] = useState<NovoProjetoForm>(DEFAULT_NOVO_PROJETO);
-  const [salvandoNovoProjeto, setSalvandoNovoProjeto] = useState(false);
+  const [projetoParaIniciar, setProjetoParaIniciar] = useState<Projeto | null>(null);
   const [datasPrevistas, setDatasPrevistas] = useState<Record<string, string>>({});
-  const [inspetoresSelecionados, setInspetoresSelecionados] = useState<Record<string, string>>({});
+  const [engenheirosSelecionados, setEngenheirosSelecionados] = useState<Record<string, string>>({});
   const [salvandoId, setSalvandoId] = useState<string | null>(null);
   const [horariosPrevistos, setHorariosPrevistos] = useState<Record<string, string>>({});
-
-  const atualizarCampoNovoProjeto = <K extends keyof NovoProjetoForm>(campo: K, valor: NovoProjetoForm[K]) => {
-    setNovoProjeto((prev) => ({ ...prev, [campo]: valor }));
-  };
 
   const carregarDados = useCallback(async () => {
     setLoading(true);
@@ -53,14 +44,14 @@ export function usePainelPlanejador() {
     [projetos],
   );
 
-  const verificarDisponibilidadeInspetorLocal = useCallback(
-    (inspetorId: string, projetoId: string, faseAtual: FaseKey) => {
-      const dataAgendada = datasPrevistas[projetoId];
-      const horaAgendada = horariosPrevistos[projetoId];
+  const verificarDisponibilidadeEngenheiro = useCallback(
+    (inspetorId: string, projetoHetmo: string, faseAtual: FaseKey) => {
+      const dataAgendada = datasPrevistas[projetoHetmo];
+      const horaAgendada = horariosPrevistos[projetoHetmo];
 
       if (!dataAgendada || !horaAgendada) return true;
 
-      const projeto = projetos.find((item) => item.id === projetoId);
+      const projeto = projetos.find((item) => item.hetmo === projetoHetmo);
       const inspecaoExistente = projeto?.inspections?.find((item) => item.fase === faseAtual);
 
       return inspetorEstaDisponivel(
@@ -74,33 +65,10 @@ export function usePainelPlanejador() {
     [datasPrevistas, horariosPrevistos, projetos, todasInspecoes],
   );
 
-  const handleCriarProjeto = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const { name_project, prazo_acordado_dias, order_number, installation_location, contato_client } = novoProjeto;
-
-    if (!name_project.trim() || !prazo_acordado_dias || !order_number.trim() || !installation_location.trim() || !contato_client.trim()) {
-      alert("Preencha todos os campos obrigatórios.");
-      return;
-    }
-
-    setSalvandoNovoProjeto(true);
-    const { error } = await criarProjeto(novoProjeto);
-    setSalvandoNovoProjeto(false);
-
-    if (error) {
-      alert("Erro ao cadastrar projeto: " + error.message);
-      return;
-    }
-
-    setNovoProjeto(DEFAULT_NOVO_PROJETO);
-    setModalCriarAberto(false);
-    await carregarDados();
-  };
-
-  const handleAgendarInspecao = async (projetoId: string, faseAtual: FaseKey) => {
-    const dataAgendada = datasPrevistas[projetoId];
-    const horaAgendada = horariosPrevistos[projetoId];
-    const inspetorId = inspetoresSelecionados[projetoId];
+  const handleAgendarInspecao = async (projetoHetmo: string, faseAtual: FaseKey) => {
+    const dataAgendada = datasPrevistas[projetoHetmo];
+    const horaAgendada = horariosPrevistos[projetoHetmo];
+    const inspetorId = engenheirosSelecionados[projetoHetmo];
 
     if (!dataAgendada) {
       alert("Por favor, selecione a data.");
@@ -113,11 +81,11 @@ export function usePainelPlanejador() {
     }
 
     const dataHoraIso = new Date(`${dataAgendada}T${horaAgendada}`);
-    const projeto = projetos.find((p) => p.id === projetoId);
+    const projeto = projetos.find((p) => p.hetmo === projetoHetmo);
     const inspecaoExistente = projeto?.inspections?.find((i) => i.fase === faseAtual);
     const inspetorEfetivo = inspetorId || inspecaoExistente?.inspetor_id;
 
-    setSalvandoId(projetoId);
+    setSalvandoId(projetoHetmo);
 
     if (!inspetorEfetivo) {
       alert("Por favor, selecione o engenheiro responsável.");
@@ -125,7 +93,7 @@ export function usePainelPlanejador() {
       return;
     }
 
-    if (!verificarDisponibilidadeInspetorLocal(inspetorEfetivo, projetoId, faseAtual)) {
+    if (!verificarDisponibilidadeEngenheiro(inspetorEfetivo, projetoHetmo, faseAtual)) {
       alert("Este inspetor já possui uma vistoria ativa a menos de 2 horas deste horário.");
       setSalvandoId(null);
       return;
@@ -152,7 +120,7 @@ export function usePainelPlanejador() {
     }
 
     const { error } = await salvarAgendamentoInspecao({
-      projetoId,
+      projetoHetmo,
       fase: faseAtual,
       inspecaoId: inspecaoExistente?.id,
       inspetorId: inspetorEfetivo,
@@ -168,19 +136,19 @@ export function usePainelPlanejador() {
 
     setDatasPrevistas((prev) => {
       const copy = { ...prev };
-      delete copy[projetoId];
+      delete copy[projetoHetmo];
       return copy;
     });
 
-    setInspetoresSelecionados((prev) => {
+    setEngenheirosSelecionados((prev) => {
       const copy = { ...prev };
-      delete copy[projetoId];
+      delete copy[projetoHetmo];
       return copy;
     });
 
     setHorariosPrevistos((prev) => {
       const copy = { ...prev };
-      delete copy[projetoId];
+      delete copy[projetoHetmo];
       return copy;
     });
 
@@ -191,23 +159,68 @@ export function usePainelPlanejador() {
     const proximoStatus = getProximoStatus(projeto.status);
     if (!proximoStatus) return;
 
-    setSalvandoId(projeto.id);
+    const prazoAcordadoDias = projeto.prazo_acordado_dias;
+    if (
+      projeto.status === "NOVO"
+      && (
+        !projeto.installation_location?.trim()
+        || prazoAcordadoDias === null
+        || !Number.isInteger(prazoAcordadoDias)
+        || prazoAcordadoDias <= 0
+      )
+    ) {
+      setProjetoParaIniciar(projeto);
+      return;
+    }
+
+    setSalvandoId(projeto.hetmo);
     setProjetos((prev) => prev.map((item) =>
-      item.id === projeto.id ? { ...item, status: proximoStatus } : item,
+      item.hetmo === projeto.hetmo ? { ...item, status: proximoStatus } : item,
     ));
 
-    const { error } = await atualizarStatusProjeto(projeto.id, proximoStatus);
+    const { error } = await atualizarStatusProjeto(projeto.hetmo, proximoStatus);
     setSalvandoId(null);
 
     if (error) {
       setProjetos((prev) => prev.map((item) =>
-        item.id === projeto.id ? { ...item, status: projeto.status } : item,
+        item.hetmo === projeto.hetmo ? { ...item, status: projeto.status } : item,
       ));
       alert("Erro ao avançar de fase: " + error.message);
       return;
     }
 
     await carregarDados();
+  };
+
+  const fecharModalInicioObra = () => {
+    setProjetoParaIniciar(null);
+  };
+
+  const handleCompletarDadosEIniciarObra = async (
+    dados: Pick<Projeto, "installation_location" | "prazo_acordado_dias">,
+  ) => {
+    const projeto = projetoParaIniciar;
+    if (!projeto) return;
+
+    const proximoStatus = getProximoStatus(projeto.status);
+    if (!proximoStatus) return;
+
+    setSalvandoId(projeto.hetmo);
+    try {
+      const { error } = await atualizarDadosEStatusProjeto(projeto.hetmo, proximoStatus, dados);
+      if (error) {
+        alert("Erro ao salvar os dados e iniciar a obra: " + error.message);
+        return;
+      }
+
+      setProjetoParaIniciar(null);
+      await carregarDados();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Erro desconhecido";
+      alert("Erro ao salvar os dados e iniciar a obra: " + message);
+    } finally {
+      setSalvandoId(null);
+    }
   };
 
   useAutoAvancoFase(projetos, handleAvancarFase);
@@ -217,22 +230,19 @@ export function usePainelPlanejador() {
     projetos,
     inspetores,
     loading,
-    modalCriarAberto,
-    setModalCriarAberto,
-    novoProjeto,
-    atualizarCampoNovoProjeto,
-    salvandoNovoProjeto,
+    projetoParaIniciar,
+    fecharModalInicioObra,
+    handleCompletarDadosEIniciarObra,
     datasPrevistas,
     setDatasPrevistas,
     horariosPrevistos,
     setHorariosPrevistos,
-    inspetoresSelecionados,
-    setInspetoresSelecionados,
+    engenheirosSelecionados,
+    setEngenheirosSelecionados,
     salvandoId,
-    handleCriarProjeto,
     handleAgendarInspecao,
     handleAvancarFase,
     carregarDados,
-    verificarDisponibilidadeInspetorLocal,
+    verificarDisponibilidadeEngenheiro,
   };
 }

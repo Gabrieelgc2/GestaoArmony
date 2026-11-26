@@ -39,7 +39,6 @@ export async function carregarDadosMaster(): Promise<{
     empresas: Empresa_Usuario[];
     usuarios: Usuario_Disponivel[];
 }> {
-
     const [empresasResult, usuariosResult] = await Promise.all([
         supabase.from("empresas").select(empresasUsuariosSelect).order("nome"),
         supabase.from("usuarios").select(usuariosSelect).order("nome"),

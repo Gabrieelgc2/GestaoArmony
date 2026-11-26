@@ -1,6 +1,6 @@
-import { AlertTriangle, Calendar, MapPin, Phone, Target, User } from "lucide-react";
+import { AlertTriangle, Calendar, MapPin, Phone } from "lucide-react";
 import { StatusBadge } from "../../../components/StatusBadge";
-import { formatarDataHora, formatarDataSimples } from "@/utils/DataConfig";
+import { formatarDataHora } from "@/utils/DataConfig";
 
 export function InspecaoCardPlanejador({ inspecao }: { inspecao: any }) {
     const agoraTimestamp = Date.now();
@@ -15,13 +15,13 @@ export function InspecaoCardPlanejador({ inspecao }: { inspecao: any }) {
                 <div>
                     <div className="flex flex-wrap items-center gap-2.5">
                         <h2 className="text-base font-bold text-gray-900">
-                            {inspecao.name_project}
+                            {inspecao.nome}
                         </h2>
                         <StatusBadge concluido={inspecao.concluido} atrasada={estaAtrasada} />
                     </div>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mt-1">
                         <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-700">
-                            #{inspecao?.order_number || "-"}
+                            #{inspecao?.numero || "-"}
                         </span>
                         <span className="flex items-center gap-1">
                             <MapPin size={13} className="text-gray-400" />
@@ -30,10 +30,6 @@ export function InspecaoCardPlanejador({ inspecao }: { inspecao: any }) {
                         <span className="flex items-center gap-1">
                             <Phone size={13} className="text-gray-400" />
                             {inspecao?.contato_client || "-"}
-                        </span>
-                        <span className="flex items-center gap-1">
-                            <User size={13} className="text-gray-400" />
-                            {inspecao.profiles?.full_name || "-"}
                         </span>
                     </div>
                 </div>
@@ -51,13 +47,6 @@ export function InspecaoCardPlanejador({ inspecao }: { inspecao: any }) {
                         <span>Data Prevista: <strong className="text-gray-900">{dataHoraFormatada}</strong></span>
                     </div>
                 </div>
-
-                {inspecao?.data_limite_entrega && (
-                    <div className="flex items-center gap-1.5 text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 shrink-0">
-                        <Target size={14} className="text-emerald-600 shrink-0" />
-                        <span>Limite de Entrega: {formatarDataSimples(inspecao.data_limite_entrega)}</span>
-                    </div>
-                )}
 
                 {/* 3. ALERTA DE DEVOLUÇÃO / RECUSA */}
                 {inspecao.status_aprovacao === "RECUSADO" && !inspecao.concluido && (

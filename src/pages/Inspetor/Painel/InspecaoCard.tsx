@@ -37,7 +37,7 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
   const handleSalvarRelatorio = async (dadosForm: GuiaMedicaoCompleta) => {
     await salvarRelatorioMedicao({
       ...dadosForm,
-      projetoId: inspecao.projects?.id,
+      projetoId: inspecao.projects?.hetmo,
       inspecaoId: inspecao.id,
     });
     setRelatorioEnviado(true);
@@ -56,13 +56,13 @@ export function InspecaoCard({ inspecao, hook }: { inspecao: any; hook: any }) {
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
           <h2 className="text-base font-bold text-gray-900">
-          {proj?.name_project}
+          {proj?.nome}
           </h2>
           <StatusBadge concluido={inspecao.concluido} atrasada={estaAtrasada} />
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mt-1">
             <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-gray-700">
-              #{proj?.order_number || "-"}
+              #{proj?.numero || "-"}
             </span>
             <span className="flex items-center gap-1">
               <MapPin size={13} className="text-gray-400" />

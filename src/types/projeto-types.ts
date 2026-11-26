@@ -7,12 +7,12 @@ export type ProjetoCardActions = {
   setDatasPrevistas: Dispatch<SetStateAction<Record<string, string>>>;
   horariosPrevistos: Record<string, string>;
   setHorariosPrevistos: Dispatch<SetStateAction<Record<string, string>>>;
-  inspetoresSelecionados: Record<string, string>;
-  setInspetoresSelecionados: Dispatch<SetStateAction<Record<string, string>>>;
+  engenheirosSelecionados: Record<string, string>;
+  setEngenheirosSelecionados: Dispatch<SetStateAction<Record<string, string>>>;
   salvandoId: string | null;
   onAgendarInspecao: (projetoId: string, fase: FaseKey) => Promise<void>;
   onAvancarFase: (projeto: Projeto) => Promise<void>;
-  verificarDisponibilidadeInspetor: (inspetorId: string, projetoId: string, fase: FaseKey) => boolean;
+  verificarDisponibilidadeEngenheiro: (inspetorId: string, projetoId: string, fase: FaseKey) => boolean;
 };
 
 export type ProjetoCardProps = {

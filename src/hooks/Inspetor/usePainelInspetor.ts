@@ -27,7 +27,7 @@ export function usePainelInspetor() {
         if (item.concluido) continue;
 
         const dataAlvo = item.data_prevista;
-        const nomeObra = item.projects?.name_project;
+        const nomeObra = item.projects?.nome;
 
         if (dataAlvo) {
           const payload = gerarPayloadNotificacao({
@@ -62,8 +62,8 @@ export function usePainelInspetor() {
     }
 
     const { data: profile } = await supabase
-      .from("profiles")
-      .select("full_name")
+      .from("usuarios")
+      .select("nome")
       .eq("id", user.id)
       .single();
 
@@ -80,11 +80,10 @@ export function usePainelInspetor() {
         concluido,
         justificativa,
         status_aprovacao,
-        project_id,
-        projects:project_id (
-          id,
-          name_project,
-          order_number,
+        hetmo,
+        projects(
+          nome,
+          numero,
           installation_location,
           contato_client,
           prazo_acordado_dias,
@@ -135,7 +134,7 @@ export function usePainelInspetor() {
       if (dataPrevMedicao && horaPrevMedicao) {
         await supabase.from("inspections").insert([
           {
-            project_id: inspecao.project_id,
+            hetmo: inspecao.hetmo,
             inspetor_id: inspecao.inspetor_id,
             fase: "MEDICAO",
             data_prevista: dataHoraIso,
@@ -162,7 +161,7 @@ export function usePainelInspetor() {
           data_medicao_final: dataDefinitiva,
           data_limite_entrega: dataLimiteFormatada,
         })
-        .eq("id", inspecao.project_id);
+        .eq("hetmo", inspecao.hetmo);
     }
 
     setSalvandoId(null);

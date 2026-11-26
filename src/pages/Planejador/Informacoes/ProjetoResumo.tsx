@@ -10,20 +10,20 @@ export function ProjetoResumo({ projeto }: ProjetoResumoProps) {
   return (
     <div>
       <div className="flex items-start justify-between gap-1">
-        <h2 className="text-sm font-bold text-gray-900 leading-snug">{projeto.name_project}</h2>
+        <h2 className="text-sm font-bold text-gray-900 leading-snug">{projeto.clients?.nome ?? ""}</h2>
         <span className="text-[10px] font-mono font-semibold bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
-          #{projeto.order_number || "-"}
+          #{projeto.numero || "-"}
         </span>
       </div>
 
       <div className="mt-2 space-y-1 text-[11px] text-gray-500">
-        <p className="flex items-center gap-1.5 truncate">
+        <p className="flex items-center gap-1.5">
           <MapPin size={13} className="text-gray-400 shrink-0" />
-          <span className="truncate">{projeto.installation_location || "Local não informado"}</span>
+          <span>{projeto.installation_location || "Local não informado"}</span>
         </p>
-        <p className="flex items-center gap-1.5 truncate">
+        <p className="flex items-center gap-1.5">
           <Phone size={13} className="text-gray-400 shrink-0" />
-          <span className="truncate">{projeto.contato_client || "-"}</span>
+          <span>{projeto.contato_client || "-"}</span>
         </p>
         <p className="flex items-center gap-1.5">
           <Clock size={13} className="text-gray-400 shrink-0" />

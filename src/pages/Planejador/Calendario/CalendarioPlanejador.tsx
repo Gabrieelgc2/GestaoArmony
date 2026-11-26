@@ -15,23 +15,14 @@ export function CalendarioPlanejador({ hook }: { hook: any }) {
             (proj.inspections || []).map((insp: any) => ({
                 ...insp,
                 contato_client: proj.contato_client,
-                name_project: proj.name_project,
-                order_number: proj.order_number,
+                nome: proj.clients?.nome,
+                numero: proj.numero,
                 installation_location: proj.installation_location,
             }))
         );
     }, [projetos]);
 
-    const listaInspetores = useMemo(() => {
-        const map = new Map<string, string>();
-        todasInspecoes.forEach((i: any) => {
-            const nome = i.profiles?.full_name;
-            if (i.inspetor_id && nome) {
-                map.set(i.inspetor_id, nome);
-            }
-        });
-        return Array.from(map.entries()).map(([id, nome]) => ({ id, nome }));
-    }, [todasInspecoes]);
+    const listaInspetores = hook?.inspetores || [];
 
     // 3. Aplica o filtro de inspetor
     const inspecoesFiltradas = useMemo(() => {
@@ -101,7 +92,7 @@ export function CalendarioPlanejador({ hook }: { hook: any }) {
                                 className="bg-transparent text-gray-700 font-medium outline-none cursor-pointer"
                             >
                                 <option value="TODOS">Todos os engenheiros</option>
-                                {listaInspetores.map((insp) => (
+                                {listaInspetores.map((insp: any) => (
                                     <option key={insp.id} value={insp.id}>
                                         {insp.nome}
                                     </option>

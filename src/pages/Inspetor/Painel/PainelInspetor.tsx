@@ -23,7 +23,7 @@ export function PainelInspetor() {
         <div>
         <h1 className="text-lg font-bold text-gray-900">Agenda de Vistorias</h1>
         <p className="text-xs text-gray-500">
-          Olá, {userProfile?.full_name || "Inspetor"}
+          Olá, {userProfile?.nome || "Inspetor"}
         </p>
         </div>
         <button
