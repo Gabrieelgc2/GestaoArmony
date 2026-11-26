@@ -11,20 +11,20 @@ export function UpdatePrompt() {
         const response = await fetch(`/version.json?t=${Date.now()}`, {
           cache: 'no-store',
         });
-        
+
         if (!response.ok) return;
         const data = await response.json();
 
         // Salva a versão inicial quando o usuário abre o site
         if (!currentVersion.current) {
           currentVersion.current = data.version;
-        } 
+        }
         // Se a versão no servidor mudou, ativa o aviso
         else if (currentVersion.current !== data.version) {
           setHasUpdate(true);
         }
       } catch (error) {
-        console.error('Erro ao verificar atualização:', error);
+        console.error('Erro ao verificar atualização: ', error);
       }
     };
 
@@ -63,13 +63,34 @@ export function UpdatePrompt() {
           Atualize para carregar as melhorias mais recentes.
         </span>
       </div>
-      
+
       <button
         onClick={handleReload}
         className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-500 active:scale-95 cursor-pointer"
       >
         Atualizar agora
       </button>
+      <button
+        onClick={() => setHasUpdate(false)}
+        aria-label="Fechar aviso"
+        className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-800 hover:text-white cursor-pointer"
+      >
+        <svg
+          xmlns="http://w3.org"
+          className="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
     </div>
   );
+  /**/
 }
