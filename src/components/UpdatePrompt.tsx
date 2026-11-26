@@ -99,6 +99,5 @@ export function UpdatePrompt() {
         </svg>
       </button>
     </div>
-    /**/
   );
 }
