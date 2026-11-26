@@ -3,9 +3,12 @@ import { useEffect, useState, useRef } from 'react';
 export function UpdatePrompt() {
   const [hasUpdate, setHasUpdate] = useState(false);
   const currentVersion = useRef(null);
+  const isDismissed = useRef(false);
 
   useEffect(() => {
     const checkVersion = async () => {
+      if(isDismissed.current) return;
+
       try {
         // O parâmetro ?t= evita qualquer cache residual de rede
         const response = await fetch(`/version.json?t=${Date.now()}`, {
@@ -53,6 +56,11 @@ export function UpdatePrompt() {
     window.location.reload();
   };
 
+  const handleDismiss = () => {
+    isDismissed.current = true;
+    setHasUpdate(false);
+  };
+
   if (!hasUpdate) return null;
 
   return (
@@ -71,7 +79,7 @@ export function UpdatePrompt() {
         Atualizar agora
       </button>
       <button
-        onClick={() => setHasUpdate(false)}
+        onClick={handleDismiss}
         aria-label="Fechar aviso"
         className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-800 hover:text-white cursor-pointer"
       >
