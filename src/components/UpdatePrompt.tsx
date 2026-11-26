@@ -92,5 +92,4 @@ export function UpdatePrompt() {
       </button>
     </div>
   );
-  /**/
 }
